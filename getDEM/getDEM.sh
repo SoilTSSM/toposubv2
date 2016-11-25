@@ -13,7 +13,7 @@ eio clip -o langtang.tif --bounds 85.52 28.1 85.68 28.3
 
 #this works
 wget --user jfiddes --password St0kkang1 http://e4ftl01.cr.usgs.gov//MODV6_Dal_D/SRTM/SRTMGL1.003/2000.02.11/N28E085.SRTMGL1.hgt.zip
-unzip  N28E085.SRTMGL1.hgt.zip 
+unzip  N28E085.SRTMGL1.hgt.zip
 gdal_translate -q -co TILED=YES -co COMPRESS=DEFLATE -co ZLEVEL=9 -co PREDICTOR=2 N28E085.hgt SRTMDAT.tif
 
 #name of dem file is llcorner 1deg tiles
@@ -21,14 +21,15 @@ gdal_translate -q -co TILED=YES -co COMPRESS=DEFLATE -co ZLEVEL=9 -co PREDICTOR=
 
 
 #parse credentials file to get user/pwd
-read('~/.credentials_earthdata')
-
+read.Files('~/.credentials_earthdata')
+USER=unlist(strsplit(readLines('~/.credentials_earthdata')[[1]],'='))[2]
+PWD=unlist(strsplit(readLines('~/.credentials_earthdata')[[2]],'='))[2]
 #==================================================================
 # DEM retrieval based on set of points:
 #=================================================================
 
 #points input
-lon=c(85.52 ,85.68,84.2) 
+lon=c(85.52 ,85.68,84.2)
 lat=c(28.1 ,28.3, 27.8)
 df=data.frame(lon,lat)
 
