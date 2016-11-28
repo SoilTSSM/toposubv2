@@ -1,8 +1,9 @@
 #=============================================================================================================
 #External Dependencies
 #=============================================================================================================
-# elevation: https://pypi.python.org/pypi/elevation
+# elevation: https://pypi.python.org/pypi/elevation #perhaps not anymore?
 #erathdata login: https://urs.earthdata.nasa.gov/profile
+#gdal_translate
 
 eio clip -o yala.tif --bounds 12.35 41.8 12.65 42
 eio clip -o test1.tif --bounds 12.35 31.8 12.65 32.1
@@ -12,7 +13,7 @@ eio clip -o langtang.tif --bounds 85.52 28.1 85.68 28.3
 
 
 #this works
-wget --user jfiddes --password St0kkang1 http://e4ftl01.cr.usgs.gov//MODV6_Dal_D/SRTM/SRTMGL1.003/2000.02.11/N28E085.SRTMGL1.hgt.zip
+wget --user USER --password PWD http://e4ftl01.cr.usgs.gov//MODV6_Dal_D/SRTM/SRTMGL1.003/2000.02.11/N28E085.SRTMGL1.hgt.zip
 unzip  N28E085.SRTMGL1.hgt.zip
 gdal_translate -q -co TILED=YES -co COMPRESS=DEFLATE -co ZLEVEL=9 -co PREDICTOR=2 N28E085.hgt SRTMDAT.tif
 
@@ -48,8 +49,13 @@ if (sign(df2$lon[i])==-1){LONVAL<-'W'}
 if (sign(df2$lon[i])==1){LONVAL<-'E'}
 
 lon_pretty=formatC(df2$lon[i],width=3,flag='0')
+
+#get tile
 system(paste0('wget --user ', USER ,  ' --password ' ,PWD, ' http://e4ftl01.cr.usgs.gov//MODV6_Dal_D/SRTM/SRTMGL1.003/2000.02.11/',LATVAL,df2$lat[i],LONVAL,lon_pretty,'.SRTMGL1.hgt.zip'))
 }
+
+#
+gdal_translate -q -co TILED=YES -co COMPRESS=DEFLATE -co ZLEVEL=9 -co PREDICTOR=2 N28E085.hgt SRTMDAT.tif
 
 #==================================================================
 # DEM retrieval based on bbox
