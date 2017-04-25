@@ -3,7 +3,17 @@
 #======================================================================================
 #in = ele,asp,slp (minimum)
 #out = listpoints.txt file, landforms.tif map
+args = commandArgs(trailingOnly=TRUE)
 
+# test if there is at least one argument: if not, return an error
+if (length(args)==0) {
+ # stop("At least one argument must be supplied (Nclust)", call.=FALSE)} 
+print("WARNING: using default value Nclust=10")
+args[1] = 10} 
+#else if (length(args)==1) {
+  # default output file
+ # args[1] = 10
+#}
 
 #======================================================================================
 # R PACKAGES
@@ -14,12 +24,12 @@ require(raster)
 #======================================================================================
 # Parameters
 #======================================================================================
-Nclust=10
-rad=TRUE #SLP/ASP IN RADIANS
-nFuzMem=10 #number of members to retain
-iter.max=20	# maximum number of iterations of clustering algorithm
+Nclust=args[1]
+print(paste0('Running TOPOSUB on ',Nclust,' samples'))
+#nFuzMem=10 #number of members to retain
+iter.max=50	# maximum number of iterations of clustering algorithm
 nRand=100000	# sample size
-fuzzy.e=1.4 	# fuzzy exponent
+#fuzzy.e=1.4 	# fuzzy exponent
 nstart1=10 	# nstart for sample kmeans [find centers]
 nstart2=1 	# nstart for entire data kmeans [apply centers]
 thresh_per=0.001 # needs experimenting with
@@ -125,8 +135,11 @@ rm(scaleDat_all)
 #gridmaps$landform <- as.factor(clust3$cluster)
 gridmaps$landform <-vec
 #writeRaster(raster(gridmaps["landform"]), paste(spath,"/landform_",Nclust,".tif",sep=''),NAflag=-9999,overwrite=T)
-writeRaster(raster(gridmaps["landform"]), paste0(wd,"landform_",Nclust,".tif"),NAflag=-9999,overwrite=T)
-
+rst=raster(gridmaps["landform"])
+writeRaster(rst, paste0(wd,"landform.tif"),NAflag=-9999,overwrite=T)
+pdf(paste0(wd,'landforms.pdf'))
+plot(rst)
+dev.off()
 samp_mean <- aggregate(gridmaps@data[predNames2], by=list(gridmaps$landform), FUN='mean')
 samp_sd <- aggregate(gridmaps@data[predNames2], by=list(gridmaps$landform), FUN='sd')
 samp_sum <- aggregate(gridmaps@data[predNames2], by=list(gridmaps$landform), FUN='sum')
@@ -151,7 +164,7 @@ members<-mem$ele
 colnames(samp_mean)[1] <- "id"
 lsp<-data.frame(members,samp_mean)
 
-write.table(round(lsp,2),paste0(wd, '/listpoints.txt'), sep=',', row.names=FALSE)
+write.table(round(lsp,2),paste0(wd, '/listpoints.txt'), sep='\t', row.names=FALSE)
 
 #make horizon files MOVED TO SEPERATE SCRISPT
 #hor(listPath='.')
