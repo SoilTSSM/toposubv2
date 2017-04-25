@@ -10,7 +10,17 @@
 #=============================================================================================================
 #downloads files: http://www.pymodis.org/scripts/modis_download.html
 #=============================================================================================================
+modis_download.py -u ftp://e4ftl01.cr.usgs.gov/ -t h23v01 -s MOLT -p MOD13Q1.006  -U jfiddes -P Stokkang1 -f 2008-08-12 /home/joel/data/modis/h23v05_test 
+
+https://e4ftl01.cr.usgs.gov/MOLT/MOD13Q1.006/2000.08.12/MOD13Q1.A2000225.h23v01.006.2015138080622.hdf
+
+
+
 modis_download.py -u ftp://n5eil01u.ecs.nsidc.org -t h23v05 -s SAN/MOST -p MOD10A2.005 -A ~/data/modis/h23v05
+
+#simple method
+wget --user jfiddes --password St0kkang1 'https://e4ftl01.cr.usgs.gov/MOLT/MOD13Q1.006/2000.02.18/MOD13Q1.A2000049.h23v05.006.2015136104715.hdf'
+wget --user jfiddes --password St0kkang1 'https://e4ftl01.cr.usgs.gov/MOLT/MOD13Q1.006/2000.02.18/MOD13Q1.A2000049.h23v05.006.2015136104715.hdf'
 
 #=============================================================================================================
 #converts - cant this to work
@@ -21,8 +31,5 @@ modis_download.py -u ftp://n5eil01u.ecs.nsidc.org -t h23v05 -s SAN/MOST -p MOD10
 #edit and run
 #=============================================================================================================
 Rscript convertMODIS.R
-#
-#
-#
-#
-#
+
+
