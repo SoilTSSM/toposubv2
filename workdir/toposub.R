@@ -1,31 +1,36 @@
-#======================================================================================
-# I/O
-#======================================================================================
+#====================================================================
+# SETUP
+#====================================================================
+#INFO
 #in = ele,asp,slp (minimum)
 #out = listpoints.txt file, landforms.tif map
-args = commandArgs(trailingOnly=TRUE)
 
-# test if there is at least one argument: if not, return an error
-if (length(args)==0) {
- # stop("At least one argument must be supplied (Nclust)", call.=FALSE)} 
-print("WARNING: using default value Nclust=10")
-args[1] = 10} 
-#else if (length(args)==1) {
-  # default output file
- # args[1] = 10
-#}
-
-#======================================================================================
-# R PACKAGES
-#======================================================================================
+#DEPENDENCY
 require(rgdal)
 require(raster)
 
-#======================================================================================
-# Parameters
-#======================================================================================
-Nclust=args[1]
-print(paste0('Running TOPOSUB on ',Nclust,' samples'))
+#SOURCE
+source("/home/joel/src/TOPOMAP/toposubv2/workdir/toposub_src.R")
+
+#====================================================================
+# PARAMETERS/ARGS
+#====================================================================
+args = commandArgs(trailingOnly=TRUE)
+wd=args[1]
+Nclust=args[2]
+# # test if there is at least one argument: if not, return an error
+# if (length(args)==0) {
+#  # stop("At least one argument must be supplied (Nclust)", call.=FALSE)} 
+# print("WARNING: using default value Nclust=10")
+# args[1] = 10} 
+# #else if (length(args)==1) {
+#   # default output file
+#  # args[1] = 10
+# #}
+
+#====================================================================
+# PARAMETERS FIXED
+#====================================================================
 #nFuzMem=10 #number of members to retain
 iter.max=50	# maximum number of iterations of clustering algorithm
 nRand=100000	# sample size
@@ -34,11 +39,9 @@ nstart1=10 	# nstart for sample kmeans [find centers]
 nstart2=1 	# nstart for entire data kmeans [apply centers]
 thresh_per=0.001 # needs experimenting with
 samp_reduce=FALSE
-#======================================================================================
-# SETUP
-#======================================================================================
-source("/home/joel/src/TOPOMAP/toposubv2/workdir/toposub_src.R")
-wd="/home/joel/sim/topomap_test/"
+
+#**********************  SCRIPT BEGIN *******************************
+print(paste0('Running TOPOSUB on ',Nclust,' samples'))
 
 #==============================================================================
 # TopoSUB preprocessor
@@ -165,6 +168,14 @@ colnames(samp_mean)[1] <- "id"
 lsp<-data.frame(members,samp_mean)
 
 write.table(round(lsp,2),paste0(wd, '/listpoints.txt'), sep='\t', row.names=FALSE)
+
+pdf(paste0(wd, 'sampleDistributions.pdf'), width=6, height =12)
+par(mfrow=c(3,1))
+hist(lsp$ele)
+hist(lsp$slp)
+hist(lsp$asp)
+hist(lsp$members)
+dev.off()
 
 #make horizon files MOVED TO SEPERATE SCRISPT
 #hor(listPath='.')

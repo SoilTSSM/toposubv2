@@ -1,19 +1,31 @@
+#====================================================================
+# SETUP
+#====================================================================
+#INFO
 
-#R packages
+#DEPENDENCY
 require(raster)
 require(horizon)
 
-#==================================================================
-# SETUP
-#=================================================================
-#workdir
-wd="/home/joel/sim/topomap_test/"
-dir.create(paste0(wd,'/predictors'))
+#SOURCE
+source('/home/joel/src/TOPOMAP/toposubv2/workdir/getERA_src.R')
 
-
+#====================================================================
+# PARAMETERS/ARGS
+#====================================================================
+args = commandArgs(trailingOnly=TRUE)
+wd=args[1]
+runtype=args[2]
+bbox=as.numeric(unlist(strsplit( args[3],",")))
+grid=args[4]
+#points input
+#lon=c(85.52 ,85.68,84.2)
+#lat=c(28.1 ,28.3, 27.8)
+#====================================================================
+# PARAMETERS FIXED
+#====================================================================
 #DEM Data dir
 demDir="/home/joel/data/DEM/srtm"
-setwd(demDir)
 
 #parse credentials file to get user/pwd: https://urs.earthdata.nasa.gov/profile
 #to create ~/.netrc credentials file run lpdaacLogin() (install.package('MODIS')
@@ -22,21 +34,22 @@ print(paste0('using credentials for: ', SERVICE))
 USER=unlist(strsplit(readLines("~/.netrc")[[2]]," "))[2]
 PWD=unlist(strsplit(readLines("~/.netrc")[[3]]," "))[2]
 
-type="bbox" #"points or "bbox"
 
-#points input
-lon=c(85.52 ,85.68,84.2)
-lat=c(28.1 ,28.3, 27.8)
 
 #bbox=(e,s,w,n)
-bbox=c(85.1, 27.8, 85.8, 27.7)
+#bbox=c(85.1, 27.8, 85.8, 27.7)
 
 compute_svf<-FALSE
 
-#==================================================================
+#**********************  SCRIPT BEGIN *******************************
+dir.create(paste0(wd,'/predictors'))
+setwd(demDir)
+print(paste0('computing domain for ERA-grid resolution: ', grid))
+
+#====================================================================
 # DEM retrieval based on set of points:
-#=================================================================
-if (type == "points"){
+#====================================================================
+if (runtype == "points"){
 	setwd(demDir)
 	df=data.frame(lon,lat)
 
@@ -73,10 +86,10 @@ if (type == "points"){
 #
 
 
-#==================================================================
+#====================================================================
 # DEM retrieval based on bbox
-#=================================================================
-if (type == "bbox"){
+#====================================================================
+if (runtype == "bbox"){
 	setwd(demDir)
 	floorbox=floor(bbox)
 	lonseq=seq(floorbox[1],floorbox[3],1)
@@ -111,9 +124,9 @@ if (type == "bbox"){
 		}
 	}
 }
-#==================================================================
+#====================================================================
 # MERGE RASTER
-#=================================================================
+#====================================================================
 demfiles=list.files(pattern="SRTMDAT*")
 if(length(demfiles)>1){
 rasters1 <- list.files(pattern="SRTMDAT*",full.names=TRUE, recursive=FALSE)
@@ -128,10 +141,55 @@ dem<-rast.mosaic
 	dem <- raster(demfiles)
 }
 
+#====================================================================
+# CLIP TO NEAREST ERA EXTENT
+#====================================================================
+#parameters
+ele=dem
+tol=0 #must be greater than 0.5*box resolution to get correct extent in degrees
+xtent=extent(ele)
+n=xtent@ymax+tol
+s=xtent@ymin-tol
+e=xtent@xmax+tol
+w=xtent@xmin-tol
+ar= paste(n,w,s,e,sep='/')# region of interest N/W/S/E this corresponds to box centres
+t='00/12'#00/12 gives 3hr data for sfc retrieval ; 00/06/12/18 gives 6hr data for pl retrieval (3hr not possible) ; 00/12 for accumulated
+stp='3/6/9/12'#3/6/9/12 gives 3hr data for sfc ; 0 gives 6hr data for pl retrieval (3hr not possible)
+lt='sfc'# sfc=surface or pl=pressure level
+typ='fc'#an=analysis or fc=forecast, depends on parameter - check on ERA gui.
+par= 168# parameter code - check on ERA gui.
+tar='eraExtent.nc'
+grd=paste0(grid,'/',grid)
+dd="20121230/to/20121231"
 
-#==================================================================
+#request
+getERA(dd=dd, t=t, grd=grd, stp=stp, lt=lt,typ=typ,par=par,ar=ar,tar=tar,plev=NULL,workd=wd)
+eraExtent=raster('eraExtent.nc')
+
+# crop domain to era grids completely covered by DEM - this will lose margin of dem
+# accuracy of these two extents is around half DEm pixel = 15m ie can be 15m difference in boudaries
+
+newExtent=crop(eraExtent,ele,snap='in')
+newDEM=crop(ele,newExtent)
+writeRaster(newExtent, 'eraExtent.tif')
+dem<-newDEM
+
+#plot of simulation domain
+pdf('extentMap.pdf')
+plot(extent(eraExtent),col='green', lwd=2, main='New extent of ERA-grids overlaid input DEM. New DEM outlin (blue). Original ERA request (green)')
+plot(ele,add=TRUE, lwd=2)
+plot(newExtent,add=TRUE)
+plot(extent(newDEM),add=TRUE, col='blue', lwd=2)
+dev.off()
+
+
+
+
+
+
+#====================================================================
 # EXTRACT SVF
-#================================================================= 
+#====================================================================
 #https://cran.r-project.org/web/packages/horizon/horizon.pdf
 #http://onlinelibrary.wiley.com/doi/10.1002/joc.3523/pdf
 if (compute_svf == TRUE){
@@ -144,28 +202,28 @@ writeRaster(round(s,2), "svf.tif", overwrite=TRUE) #write and reduce precision
 }
 #perhaps need to do this on indiv tiles for memory issues?
 
-#==================================================================
+#====================================================================
 # EXTRACT SLP/ASP
-#================================================================= 
+#================================================================= ==
 slp=terrain(dem, opt="slope", unit="degrees", neighbors=8)
 asp=terrain(dem, opt="aspect", unit="degrees", neighbors=8)
 
-#==================================================================
+#====================================================================
 # WRITE OUTPUTS
-#================================================================= 
+#====================================================================
 setwd(paste0(wd,'/predictors'))
 writeRaster(round(slp,0), "slp.tif", overwrite=TRUE) #write and reduce precision
 writeRaster(round(asp,0), "asp.tif", overwrite=TRUE) #write and reduce precision
 writeRaster(dem, "ele.tif", overwrite=TRUE)
 
-#==================================================================
+#====================================================================
 # CLEANUP
-#================================================================= 
+#====================================================================
 rm(list = ls())
 
-#==================================================================
+#====================================================================
 # OUTPUT
-#================================================================= 
+#====================================================================
 
 # dem.tif in longlat
 # asp.tif in degrees
@@ -175,9 +233,9 @@ rm(list = ls())
 #write these to predictors dir
 
 
-#=============================================================================================================
+#====================================================================
 # OLDSTUFF
-#=============================================================================================================
+#====================================================================
 # elevation: https://pypi.python.org/pypi/elevation #perhaps not anymore?
 #erathdata login: https://urs.earthdata.nasa.gov/profile
 #gdal_translate

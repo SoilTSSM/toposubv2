@@ -1,32 +1,46 @@
-#==================================================================
+#====================================================================
 # SETUP
-#=================================================================
+#====================================================================
+#INFO
+#make horizon files MOVED TO SEPERATE SCRISPT
+#hor(listPath=wd)
+
+
+#DEPENDENCY
+require('MODIS') # https://cran.r-project.org/web/packages/MODIS/MODIS.pdf
+require('rgdal') #dont understand why need to load this manually
+
+#SOURCE
 source("/home/joel/src/TOPOMAP/toposubv2/workdir/toposub_src.R")
-wd="/home/joel/sim/topomap_test/"
+
+#====================================================================
+# PARAMETERS/ARGS
+#====================================================================
+args = commandArgs(trailingOnly=TRUE)
+wd=args[1]
+
+#====================================================================
+# PARAMETERS FIXED
+#====================================================================
 outDirPath ="/home/joel/data/MODIS_ARC/"#given in MODISoptions()
 
-#PARAMETERS TO bOECKLI 2012 SLOPE MODEL
+#PARAMETERS TO BOECKLI 2012 SLOPE MODEL
 smin=35
 smax=55
 #introduce parameter for debris/bedrock class split
 
 #threshold to distinguish between veg and non-veg
 ndviThreshold=0.4 
-#==================================================================
-# script
-#=================================================================
+
+#**********************  SCRIPT BEGIN *******************************
 setwd(wd)
 
-
-#make horizon files MOVED TO SEPERATE SCRISPT
-#hor(listPath=wd)
 
 #====================================================================
 #	fetch and compute MODIS NDVI
 #====================================================================
 
-require('MODIS') # https://cran.r-project.org/web/packages/MODIS/MODIS.pdf
-require('rgdal') #dont understand why need to load this manually
+
 #getProduct() #identify products to download
 myextent=raster('predictors/ele.tif') # output is projected and clipped to this extent
 
