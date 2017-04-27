@@ -14,7 +14,12 @@ grid=0.25 #era grid resoltion in degrees
 
 cd $srcdir
 Rscript getDEM.R $wd $runtype $positions $grid
-Rscript toposub.R $wd $samples
-Rscript simPrep.R $wd
+
+Rscript makeSurface.R $wd
 Rscript getERA.R $wd $runtype $startDate $endDate $grid
 Rscript toposcale_pre.R $wd $startDate $endDate
+
+Rscript prepareSims.R $wd
+
+
+Rscript toposub.R $wd $samples

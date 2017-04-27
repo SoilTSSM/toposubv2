@@ -171,14 +171,14 @@ eraExtent=raster('eraExtent.nc')
 
 newExtent=crop(eraExtent,ele,snap='in')
 newDEM=crop(ele,newExtent)
-writeRaster(newExtent, 'eraExtent.tif')
+writeRaster(newExtent, 'eraExtent.tif', overwrite=TRUE)
 dem<-newDEM
 
 #plot of simulation domain
 pdf('extentMap.pdf')
-plot(extent(eraExtent),col='green', lwd=2, main='New extent of ERA-grids overlaid input DEM. New DEM outlin (blue). Original ERA request (green)')
+plot(extent(eraExtent),col='green', lwd=2, main='New extent of ERA-grids overlaid input DEM.' , sub='New DEM outline (blue). Original ERA request (green)')
 plot(ele,add=TRUE, lwd=2)
-plot(newExtent,add=TRUE)
+plot(rasterToPolygons(newExtent),add=TRUE, lwd=2)
 plot(extent(newDEM),add=TRUE, col='blue', lwd=2)
 dev.off()
 
