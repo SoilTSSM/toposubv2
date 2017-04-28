@@ -12,30 +12,20 @@ require(raster)
 # PARAMETERS/ARGS
 #====================================================================
 args = commandArgs(trailingOnly=TRUE)
-wd= args[1]
+wd=args[1]
+dem=args[2]
+eraExtent=args[3]
 #====================================================================
 # PARAMETERS FIXED
 #====================================================================
 
 #**********************  SCRIPT BEGIN *******************************
 setwd(wd)
-eraExtent=raster(paste0(wd,'/eraExtent.tif'))
-Nruns=ncell(eraExtent)
-r=setValues(eraExtent,1:Nruns)
-extentPoly=rasterToPolygons(r)
-
-for (i in 1:Nruns){
-setwd(wd)
-dir.create(paste0('grid',i), showWarnings=FALSE)
-dir.create(paste0('grid',i,'/predictors'), showWarnings=FALSE)
-setwd(paste0(wd,'/predictors'))
-predictors=list.files(pattern='*.tif')
-Npreds=length(predictors)
-
-	for (p in 1:Npreds){
-	setwd(paste0(wd,'/predictors'))	
-	rst=crop(raster(predictors[p]) ,extentPoly[extentPoly$eraExtent==i,])
-	setwd(paste0(wd, '/grid', i,'/predictors'))
-	writeRaster(rst, predictors[p], overwrite=TRUE)
-	}
-}
+d=raster(dem)
+x=raster(eraExtent)
+gridBoxRst=init(x, v='cell')
+poly=rasterToPolygons(gridBoxRst)
+demc=crop(d,poly)
+boxEle=extract(demc, poly,mean)
+write.table(boxEle, 'eraEle.txt', sep=',', row.names=FALSE, col.names=FALSE)
+#cat(as.numeric(boxEle))

@@ -18,6 +18,7 @@ source("/home/joel/src/TOPOMAP/toposubv2/workdir/toposub_src.R")
 args = commandArgs(trailingOnly=TRUE)
 wd=args[1]
 Nclust=args[2]
+Ngrid=args[3]
 # # test if there is at least one argument: if not, return an error
 # if (length(args)==0) {
 #  # stop("At least one argument must be supplied (Nclust)", call.=FALSE)} 
@@ -47,10 +48,12 @@ print(paste0('Running TOPOSUB on ',Nclust,' samples'))
 # TopoSUB preprocessor
 #==============================================================================
 setwd(paste0(wd,'/predictors'))
-predictors=list.files(paste0(wd,'/predictors'))
-rstack=stack(predictors)
-gridmaps<- as(rstack, 'SpatialGridDataFrame')
+predictors=list.files( pattern='*.tif')
 
+print(predictors)
+rstack=stack(predictors)
+
+gridmaps<- as(rstack, 'SpatialGridDataFrame')
 
 #decompose aspect
 res=aspect_decomp(gridmaps$asp)
@@ -59,7 +62,7 @@ gridmaps$aspS<-res$aspS
 
 #define new predNames (aspC, aspS)
 allNames<-names(gridmaps@data)
-predNames2 <- allNames[which(allNames!='landform'&allNames!='asp')]
+predNames2 <- allNames[which(allNames!='surface'&allNames!='asp')]
 
 #sample inputs
 #need to generalise to accept 'data' argument
@@ -139,8 +142,8 @@ rm(scaleDat_all)
 gridmaps$landform <-vec
 #writeRaster(raster(gridmaps["landform"]), paste(spath,"/landform_",Nclust,".tif",sep=''),NAflag=-9999,overwrite=T)
 rst=raster(gridmaps["landform"])
-writeRaster(rst, paste0(wd,"landform.tif"),NAflag=-9999,overwrite=T)
-pdf(paste0(wd,'landforms.pdf'))
+writeRaster(rst, paste0(wd,"/landform.tif"),NAflag=-9999,overwrite=T)
+pdf(paste0(wd,'/landforms.pdf'))
 plot(rst)
 dev.off()
 samp_mean <- aggregate(gridmaps@data[predNames2], by=list(gridmaps$landform), FUN='mean')
@@ -169,7 +172,7 @@ lsp<-data.frame(members,samp_mean)
 
 write.table(round(lsp,2),paste0(wd, '/listpoints.txt'), sep='\t', row.names=FALSE)
 
-pdf(paste0(wd, 'sampleDistributions.pdf'), width=6, height =12)
+pdf(paste0(wd, '/sampleDistributions.pdf'), width=6, height =12)
 par(mfrow=c(3,1))
 hist(lsp$ele)
 hist(lsp$slp)

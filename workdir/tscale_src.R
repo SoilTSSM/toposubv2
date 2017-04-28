@@ -1,5 +1,7 @@
 #GENERAL FUNCTIONS
-
+require(ncdf4)
+require(raster)
+require(Hmisc)
 ###############################################################################################################
 #					FUNCTION: timeDaily						      #
 ###############################################################################################################
@@ -34,9 +36,9 @@
 
 #=============================================Function========================================================
 timeDaily<-function(fileName='/home/joel/data/era/pressureLevels/tair/outfile.nc', origin=1900, step='seconds', timeVar='time'){
-require(ncdf)
-nc<-open.ncdf(fileName)
-z = get.var.ncdf( nc, timeVar)
+require(ncdf4)
+nc<-nc_open(fileName)
+z = ncvar_get(nc, timeVar)
 if(step=='seconds'){z <- z*60*60} #make seconds
 time<-ISOdatetime(origin,1,1,0,0,0) + z  
 dayTS=as.POSIXct(strptime(format(time,format="%Y/%m/%d %H"),format="%Y/%m/%d"),tz="UTC")# tz correct?
@@ -204,8 +206,8 @@ return(df)
 #geop='/home/joel/data/era/surface/geop.nc'
 #const=9.80665
 #require(ncdf)
-#nc<-open.ncdf(geop)
-#z = get.var.ncdf( nc, timeVar)
+#nc<-nc_open(geop)
+#z = ncvar_get( nc, timeVar)
 #=============================================================================================================
 
 ###############################################################################################################
@@ -294,8 +296,8 @@ val_vec=c(val_vec, datLWin)
 accumToInstERA<-function(nbox, coordMap, file,origin, startDate, endDate, var, step){
 
 #Tsfile='/home/joel/data/era/surface/tair/3hr/outfile.nc'
-nc=open.ncdf(file)
-z = get.var.ncdf( nc, "time")
+nc=nc_open(file)
+z = ncvar_get(nc, "time")
 origin=origin
 z <- z*60*60 #make seconds
 dates<-ISOdatetime(origin,0,0,0,0,0) + z 
@@ -314,8 +316,8 @@ j<-ygrid_vec[nbox]# lat cell
 k1=startData
 k2=endData
 
-nc=open.ncdf(file)
-strd = get.var.ncdf( nc, var)
+nc=nc_open(file)
+strd = ncvar_get(nc, var)
 strd.cell=strd[i, j, k1:k2]
 
 step=step
@@ -482,16 +484,16 @@ xgrid_vec<-map$xlab
 ygrid_vec<-map$ylab
 }
 
-u<-open.ncdf(fileU)
-uvec = get.var.ncdf( u, varu) 
-v<-open.ncdf(fileV)
-vvec = get.var.ncdf( v, varv) 
+u<-nc_open(fileU)
+uvec = ncvar_get( u, varu) 
+v<-nc_open(fileV)
+vvec = ncvar_get(v, varv) 
 
 
 
-time = get.var.ncdf( u, "time")#get times hr since "1900-01-01 00:00:00"
-long = get.var.ncdf( u, "lon")
-lat = get.var.ncdf( u, "lat")
+time = ncvar_get( u, "time")#get times hr since "1900-01-01 00:00:00"
+long = ncvar_get( u, "lon")
+lat = ncvar_get( u, "lat")
 ### suppose we have a time in seconds since 1960-01-01 00:00:00 GMT
 ### (the origin used by SAS)
 q <- time*60*60 #make seconds
@@ -557,16 +559,16 @@ xgrid_vec<-map$xlab
 ygrid_vec<-map$ylab
 }
 
-u<-open.ncdf(fileU)
-uvec = get.var.ncdf( u, varu) 
-v<-open.ncdf(fileV)
-vvec = get.var.ncdf( v, varv) 
+u<-nc_open(fileU)
+uvec = ncvar_get( u, varu) 
+v<-nc_open(fileV)
+vvec = ncvar_get( v, varv) 
 
 
 
-time = get.var.ncdf( u, "time")#get times hr since "1900-01-01 00:00:00"
-long = get.var.ncdf( u, "lon")
-lat = get.var.ncdf( u, "lat")
+time = ncvar_get( u, "time")#get times hr since "1900-01-01 00:00:00"
+long = ncvar_get( u, "lon")
+lat = ncvar_get( u, "lat")
 ### suppose we have a time in seconds since 1960-01-01 00:00:00 GMT
 ### (the origin used by SAS)
 q <- time*60*60 #make seconds
@@ -625,15 +627,15 @@ ygrid_vec<-map$ylab
 i<-xgrid_vec[nbox] # long cell
 j<-ygrid_vec[nbox]# lat cell
 
-u<-open.ncdf(fileU)
-uvec = get.var.ncdf( u, varu) 
-v<-open.ncdf(fileV)
-vvec = get.var.ncdf( v, varv) 
+u<-nc_open(fileU)
+uvec = ncvar_get( u, varu) 
+v<-nc_open(fileV)
+vvec = ncvar_get( v, varv) 
 
 #date/time
-time = get.var.ncdf( u, "time")#get times hr since "1900-01-01 00:00:00"
-long = get.var.ncdf( u, "lon")
-lat = get.var.ncdf( u, "lat")
+time = ncvar_get( u, "time")#get times hr since "1900-01-01 00:00:00"
+long = ncvar_get( u, "lon")
+lat = ncvar_get( u, "lat")
 q <- time*60*60 #make seconds
 date<-as.POSIXct(q, origin="1996-01-01")                # local
 day1=as.POSIXct(strptime(format(date,format="%Y/%m/%d %H"),format="%Y/%m/%d"))# for aggegation
@@ -841,9 +843,9 @@ return(nameVec)
 imisWind=function(wind=T){
 require(ncdf)
 file="~/data/imis/data/imis_data.nc"
-nc<-open.ncdf(file)
+nc<-nc_open(file)
 var='HSno'
-dat = get.var.ncdf( nc, var)
+dat = ncvar_get( nc, var)
 threshold= 50000
 dat[dat>threshold]<-NA
 
@@ -901,8 +903,8 @@ grid2points =function(grid='/home/joel/data/era/surface/grid74/tp.nc', points=sh
 
 dayDates=function(fileName='/home/joel/data/era/pressureLevels/tair/outfile.nc', origin=1900, step='seconds', timeVar='time'){
 require(ncdf)
-nc<-open.ncdf(fileName)
-z = get.var.ncdf( nc, timeVar)
+nc<-nc_open(fileName)
+z = ncvar_get( nc, timeVar)
 if(step=='seconds'){z <- z*60*60} #make seconds
 time<-ISOdatetime(origin,1,1,0,0,0) + z  
 dayTS=as.POSIXct(strptime(format(time,format="%Y/%m/%d %H"),format="%Y/%m/%d"),tz="UTC")# tz correct?
@@ -916,8 +918,8 @@ return(d)
 #output months
 monthDates=function(fileName='/home/joel/data/era/pressureLevels/tair/outfile.nc', origin=1900, step='seconds', timeVar='time'){
 require(ncdf)
-nc<-open.ncdf(fileName)
-z = get.var.ncdf( nc, timeVar)
+nc<-nc_open(fileName)
+z = ncvar_get( nc, timeVar)
 if(step=='seconds'){z <- z*60*60} #make seconds
 time<-ISOdatetime(origin,1,1,0,0,0) + z  
 dayTS=as.POSIXct(strptime(format(time,format="%Y/%m/%d %H"),format="%Y/%m/%d"),tz="UTC")# tz correct?
@@ -932,8 +934,8 @@ return(mo)
 #output years
 yearDates=function(fileName='/home/joel/data/era/pressureLevels/tair/outfile.nc', origin=1900, step='seconds', timeVar='time'){
 require(ncdf)
-nc<-open.ncdf(fileName)
-z = get.var.ncdf( nc, timeVar)
+nc<-nc_open(fileName)
+z = ncvar_get( nc, timeVar)
 if(step=='seconds'){z <- z*60*60} #make seconds
 time<-ISOdatetime(origin,1,1,0,0,0) + z  
 dayTS=as.POSIXct(strptime(format(time,format="%Y/%m/%d %H"),format="%Y/%m/%d"),tz="UTC")# tz correct?
@@ -966,9 +968,9 @@ bias=function(sim,obs){sum(sim-obs, na.rm=T)/length(obs)}
 #returns coordinates of gridboxes 1-n by row 
 
 getCoordMap<-function(ncdomainfile){
-nc=open.ncdf(ncdomainfile)
-long = get.var.ncdf( nc, "longitude")
-lat = get.var.ncdf( nc, "latitude")
+nc=nc_open(ncdomainfile)
+long = ncvar_get( nc, "longitude")
+lat = ncvar_get( nc, "latitude")
 x=length(long)
 y=length(lat)
 

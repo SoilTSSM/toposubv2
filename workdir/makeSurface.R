@@ -11,18 +11,18 @@ require('MODIS') # https://cran.r-project.org/web/packages/MODIS/MODIS.pdf
 require('rgdal') #dont understand why need to load this manually
 
 #SOURCE
-source("/home/joel/src/TOPOMAP/toposubv2/workdir/toposub_src.R")
+#source("/home/joel/src/TOPOMAP/toposubv2/workdir/toposub_src.R")
 
 #====================================================================
 # PARAMETERS/ARGS
 #====================================================================
 args = commandArgs(trailingOnly=TRUE)
 wd=args[1]
-
+outDirPath =args[2]#given in MODISoptions()
 #====================================================================
 # PARAMETERS FIXED
 #====================================================================
-outDirPath ="/home/joel/data/MODIS_ARC/"#given in MODISoptions()
+
 
 #PARAMETERS TO BOECKLI 2012 SLOPE MODEL
 smin=35
@@ -91,9 +91,9 @@ surfaceModel=cover(reclassVeg, slpModelReclass) #0= veg, 1=debris , 2=steep bedr
 #	output
 #====================================================================
 
-writeRaster(surfaceModel, 'surface.tif', overwrite=TRUE)
+writeRaster(surfaceModel, 'predictors/surface.tif', overwrite=TRUE)
 
-pdf('surfacClassMap.pdf', width=6, height =12)
+pdf('surfaceClassMap.pdf', width=6, height =12)
 par(mfrow=c(2,1))
 arg <- list(at=seq(0,2,1), labels=c("Vegetation (0)","Debris (1)","Steep bedrock (2)")) #these are the class names
 color=c("lightgreen","grey","red") #and color representation
@@ -105,7 +105,7 @@ dev.off()
 #	zonal stats
 #====================================================================
 
-zones=raster('landform.tif')
-zoneStats=zonal(surfaceModel,zones, modal,na.rm=T)
-write.table(zoneStats, 'landcoverZones.txt',sep=',', row.names=F)
-print(zoneStats)
+# zones=raster('landform.tif')
+# zoneStats=zonal(surfaceModel,zones, modal,na.rm=T)
+# write.table(zoneStats, 'landcoverZones.txt',sep=',', row.names=F)
+# print(zoneStats)

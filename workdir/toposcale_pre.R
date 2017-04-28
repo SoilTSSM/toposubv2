@@ -5,7 +5,7 @@
 # Preprocess ERA-Interim fields
 
 #DEPENDENCY
-require(ncdf)
+require(ncdf4)
 
 #SOURCE
 source('tscale_src.R')
@@ -63,8 +63,8 @@ dir.create(outRootmet,  showWarnings=FALSE)
 #=======================================================================================================
 
 #INTERPOLATE TIME
-nc=open.ncdf(infileT)
-time = get.var.ncdf( nc,'time')
+nc=nc_open(infileT)
+time = ncvar_get( nc,'time')
 time2=interp6to3(time) #accepts vector
 z <- time2*60*60 #make seconds
 origin=substr(nc$dim$time$units,13,22)
@@ -73,50 +73,50 @@ save(datesPl, file=paste(outRootPl, '/dates', sep=''))
 #write.table(dates,paste(outRootPl, '/dates', sep=''), sep=',', row.names=F, col.names=F)
 
 #INTERPOLATE GRAVITY
-nc=open.ncdf(infileG)
+nc=nc_open(infileG)
 var=names(nc$var)
 
-dat = get.var.ncdf( nc,var)
+dat = ncvar_get( nc,var)
 datInterp=apply(X=dat, MARGIN=c(1,2,3), FUN=interp6to3)
 save(datInterp, file=paste(outRootPl, '/gPl', sep=''))
 
 #INTERPOLATE TAIR
-nc=open.ncdf(infileT)
+nc=nc_open(infileT)
 var=names(nc$var)
 
-dat = get.var.ncdf( nc,var)
+dat = ncvar_get( nc,var)
 datInterp=apply(X=dat, MARGIN=c(1,2,3), FUN=interp6to3)
 save(datInterp, file=paste(outRootPl, '/tairPl', sep=''))
 
 #INTERPOLATE RHUM
-nc=open.ncdf(infileRh)
+nc=nc_open(infileRh)
 var=names(nc$var)
 
-dat = get.var.ncdf( nc,var)
+dat = ncvar_get( nc,var)
 datInterp=apply(X=dat, MARGIN=c(1,2,3), FUN=interp6to3)
 save(datInterp, file=paste(outRootPl, '/rhumPl', sep=''))
 
 #INTERPOLATE U
-nc=open.ncdf(infileU)
+nc=nc_open(infileU)
 var=names(nc$var)
 
-dat = get.var.ncdf( nc,var)
+dat = ncvar_get( nc,var)
 datInterp=apply(X=dat, MARGIN=c(1,2,3), FUN=interp6to3)
 save(datInterp, file=paste(outRootPl, '/uPl', sep=''))
 
 #INTERPOLATE V
-nc=open.ncdf(infileV)
+nc=nc_open(infileV)
 var=names(nc$var)
 
-dat = get.var.ncdf( nc,var)
+dat = ncvar_get( nc,var)
 datInterp=apply(X=dat, MARGIN=c(1,2,3), FUN=interp6to3)
 save(datInterp, file=paste(outRootPl, '/vPl', sep=''))
 
 #INTERPOLATE d2m
-nc=open.ncdf(infileD)
+nc=nc_open(infileD)
 var=names(nc$var)
 
-dat = get.var.ncdf( nc,var)
+dat = ncvar_get( nc,var)
 datInterp=apply(X=dat, MARGIN=c(1,2), FUN=interp6to3)
 save(datInterp, file=paste(outRootPl, '/dewT', sep=''))
 
@@ -145,8 +145,8 @@ step=step
 #			SURFACE FIELDS TIME VECTOR
 #=======================================================================================================
 
-nc=open.ncdf(lwFile)
-time = get.var.ncdf( nc,'time')
+nc=nc_open(lwFile)
+time = ncvar_get( nc,'time')
 #origin =unlist(strsplit(nc$dim$time$units,'hours since '))[2]
 origin=substr(nc$dim$time$units,13,22)
 
@@ -157,10 +157,10 @@ datesSurf=dates[1:length(dates)-1] #remove last time value to account for acummu
 #=======================================================================================================
 #			LWIN
 #=======================================================================================================
-nc=open.ncdf(lwFile)
+nc=nc_open(lwFile)
 var=names(nc$var)
 
-indat = get.var.ncdf( nc, var)
+indat = ncvar_get( nc, var)
 
 #could vectorise but quick anyway 
 lwgridAv=c()
@@ -180,10 +180,10 @@ lwgridAdj=lwgridAv
 #=======================================================================================================
 #			SWIN
 #=======================================================================================================
-nc=open.ncdf(swFile)
+nc=nc_open(swFile)
 var=names(nc$var)
 
-indat = get.var.ncdf( nc, var)
+indat = ncvar_get( nc, var)
 
 #could vectorise but quick anyway 
 swgridAv=c()
@@ -204,10 +204,10 @@ swgridAdj=swgridAv
 #=======================================================================================================
 #			TOA
 #=======================================================================================================
-nc=open.ncdf(toaFile)
+nc=nc_open(toaFile)
 var=names(nc$var)
 
-indat = get.var.ncdf( nc, var)
+indat = ncvar_get( nc, var)
 
 #could vectorise but quick anyway 
 toagridAv=c()
@@ -229,10 +229,10 @@ toagridAdj=toagridAv
 #=======================================================================================================
 #			PRECIP
 #=======================================================================================================
-nc=open.ncdf(pFile)
+nc=nc_open(pFile)
 var=names(nc$var)
 
-indat = get.var.ncdf( nc, var)
+indat = ncvar_get( nc, var)
 
 #could vectorise but quick anyway 
 pgridAv=c()
@@ -339,10 +339,10 @@ save(toaSurf_cut, file=paste(outRootmet, '/toaSurf', sep=''))
 #read data
 load(file=paste(outRootmet, '/dewTSurf', sep=''))
 td=dewT_cut
-nc=open.ncdf(tFile)
+nc=nc_open(tFile)
 var=names(nc$var)
 
-t = get.var.ncdf( nc, var)
+t = ncvar_get( nc, var)
 
 #convert to 2d matrix
 tgrid=c()

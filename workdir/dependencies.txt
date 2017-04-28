@@ -1,0 +1,16 @@
+#R packages
+raster
+horizon
+rgdal
+MODIS
+ncdf4
+Hmisc
+
+#Linux
+gdal
+R
+python
+
+#accounts
+NASA data: DEM MODIS: https://urs.earthdata.nasa.gov/profile
+ERA-data: https://software.ecmwf.int/wiki/display/WEBAPI/Access+ECMWF+Public+Datasets

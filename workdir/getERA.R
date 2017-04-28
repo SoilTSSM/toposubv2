@@ -10,7 +10,7 @@
 require(raster)
 
 #SOURCE
-source('/home/joel/src/TOPOMAP/toposubv2/workdir/getERA_src.R')
+source('getERA_src.R')
 
 #====================================================================
 # PARAMETERS/ARGS
