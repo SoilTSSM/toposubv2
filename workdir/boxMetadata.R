@@ -53,20 +53,13 @@ nc=nc_open(infileT)
 mf=read.table('listpoints.txt',header=TRUE,sep='\t')
 npoints=length(mf$id)
 eraBoxEle=read.table('../eraEle.txt',sep=',', header=FALSE)[,1]
-print(eraBoxEle)
-print(nbox)
 
 #find ele diff station/gidbox
 #eraBoxEle<-getEraEle(dem=eraBoxEleDem, eraFile=tFile) # $masl
 gridEle<-rep(eraBoxEle[nbox],length(mf$id))
-
-print(length(mf$id))
-print(eraBoxEle[nbox])
-print(gridEle)
 mf$gridEle<-round(gridEle,2)
 eleDiff=mf$ele-mf$gridEle
 mf$eleDiff<-round(eleDiff,2)
-print(eleDiff)
 #get grid coordinates
 coordMap=getCoordMap(file)
 x<-coordMap$xlab[nbox] # long cell
