@@ -81,4 +81,36 @@ for Ngrid in $(seq 1 $ncells); do
 
 done
 
+#====================================================================
+# Retrieve SCA
+#====================================================================
+
+options_file=/home/joel/data/MODIS_ARC/SCA/options.json
+longWest=88
+longEast=89
+latNorth=29
+latSouth=28
+startDate="2017-02-01"
+EndDate="2017-02-11"
+
+bbox=$longWest,$latSouth,$longEast,$latNorth
+start='"bbox": ['
+end='],'
+newbox=$start$bbox$end
+oldboxLineN=$(grep -n 'bbox' /home/joel/data/MODIS_ARC/SCA/options.json | awk -F: '{print $1}'
+)
+
+lineNo=$oldboxLineN
+var=$newbox
+sed -i "${lineNo}s/.*/$var/" /home/joel/data/MODIS_ARC/SCA/options.json
+
+
+
+
+
+sdate=('"start_date": startDate,')
+edate=('"end_date": endDate,')
+
+
+
 

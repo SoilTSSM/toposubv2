@@ -5,9 +5,11 @@ rgdal
 MODIS
 ncdf4
 Hmisc
+MODIStsp (install and dependencies https://github.com/lbusett/MODIStsp)
 
 #Linux
 gdal
+gdal-config (sudo apt install libgdal-dev)
 R
 python
 
