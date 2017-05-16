@@ -60,6 +60,6 @@ if (svfCompute==FALSE){
 lwP <- lwPoint
 }
 
-write.table(lwP,'lwPoint.txt', row.names=F, sep=',')
+write.table(round(lwP,2),'lwPoint.txt', row.names=F, sep=',')
 
 

@@ -38,7 +38,7 @@ PWD=unlist(strsplit(readLines("~/.netrc")[[3]]," "))[2]
 
 
 #bbox=(e,s,w,n)
-#bbox=c(85.1, 27.8, 85.8, 27.7)
+#bbox=c(85.1, 27.7, 85.8, 27.8)
 
 #compute_svf<-FALSE
 

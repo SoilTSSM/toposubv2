@@ -19,7 +19,7 @@ wd= args[1]
 
 #**********************  SCRIPT BEGIN *******************************
 setwd(wd)
-eraExtent=raster(paste0(wd,'/eraExtent.tif'))
+eraExtent=raster(paste0(wd,'/spatial/eraExtent.tif'))
 Nruns=ncell(eraExtent)
 r=setValues(eraExtent,1:Nruns)
 extentPoly=rasterToPolygons(r)

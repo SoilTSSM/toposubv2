@@ -61,6 +61,6 @@ nameVec=c()
 		datpoints=cbind(datpoints, res)
 	}
 
-write.table(datpoints,'rPoint.txt', row.names=F, sep=',') #VAR
+write.table(round(datpoints,2),'rPoint.txt', row.names=F, sep=',') #VAR
 
 

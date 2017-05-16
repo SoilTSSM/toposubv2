@@ -38,25 +38,25 @@ stp='3/6/9/12'#3/6/9/12 gives 3hr data for sfc ; 0 gives 6hr data for pl retriev
 lt='sfc'# sfc=surface or pl=pressure level
 typ='fc'#an=analysis or fc=forecast, depends on parameter - check on ERA gui.
 par= 168# parameter code - check on ERA gui.
-tar='eraExtent.nc'
+tar='spatial/eraExtent.nc'
 grd=paste0(grid,'/',grid)
 dd="20121230/to/20121231"
 
 #request
 getERA(dd=dd, t=t, grd=grd, stp=stp, lt=lt,typ=typ,par=par,ar=ar,tar=tar,plev=NULL,workd=wd)
-eraExtent=raster('eraExtent.nc')
+eraExtent=raster('spatial/eraExtent.nc')
 
 # crop domain to era grids completely covered by DEM - this will lose margin of dem
 # accuracy of these two extents is around half DEm pixel = 15m ie can be 15m difference in boudaries
 
 newExtent=crop(eraExtent,ele,snap='in')
 newDEM=crop(ele,newExtent)
-writeRaster(newExtent, 'eraExtent.tif', overwrite=TRUE)
+writeRaster(newExtent, 'spatial/eraExtent.tif', overwrite=TRUE)
 writeRaster(newDEM, 'predictors/ele.tif', overwrite=TRUE)
 
 
 #plot of simulation domain
-pdf('extentMap.pdf')
+pdf('spatial/extentMap.pdf')
 plot(extent(eraExtent),col='green', lwd=2, main='New extent of ERA-grids overlaid input DEM.' , sub='New DEM outline (blue). Original ERA request (green)')
 plot(raster('predictors/dem.tif'),add=TRUE, lwd=2)
 plot(rasterToPolygons(newExtent),add=TRUE, lwd=2)

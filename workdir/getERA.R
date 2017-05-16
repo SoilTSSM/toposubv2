@@ -63,7 +63,7 @@ grd=paste0(grid,'/',grid)	# resolution long/lat (0.75/0.75) or grid single integ
 #				GET BBOX FROM raster
 #===============================================================================
 if (runtype == "bbox"){
-eraExtent=raster(paste0(wd,'/eraExtent.tif'))
+eraExtent=raster(paste0(wd,'/spatial/eraExtent.tif'))
 tol=as.numeric(grid)/2 #converts extent based on boundary to extent based on grid centres
 xtent=extent(eraExtent)
 n=xtent@ymax-tol

@@ -64,6 +64,7 @@ ftp <-   paste0("https://n5eil01u.ecs.nsidc.org/MOST/", sat, ".006/", folder_dat
 #=====================================================================================================================
 require(MODIStsp) 
 require(raster)
+#https://github.com/lbusett/MODIStsp
 
 #gui accepts tiff command line not
 #cant pass time satrt end at command line

@@ -76,5 +76,5 @@ write.table(sdifcor,'solDif.txt', row.names=F, sep=',')
 if(swTopo==FALSE){
 #old combined function replaced by functions between START and FINISH
 sol=solarCompute(swin=swm,toa=toam, dates=dd,mf=mf, tz=tz)
-write.table(sol,  'sol.txt', row.names=F, sep=',')
+write.table(round(sol,2),  'sol.txt', row.names=F, sep=',')
 }

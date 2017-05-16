@@ -31,7 +31,7 @@ coordmapfile='../eraDat/strd.nc'
 
 #make shapefile of points
 #mf=read.table(metaFile, sep=',', header =T)
-mf=read.table('listpoints.txt',header=T,sep=',')
+mf=read.table('listpoints.txt',header=T,sep='\t')
 npoints=length(mf$id)
 
 #=======================================================================================================
@@ -58,6 +58,6 @@ ed=mf$eleDiff
 lapseCor=(1+(pfactor*(ed/1000))/(1-(pfactor*(ed/1000))))
 pSurf_lapseT=t(pSurfm)*lapseCor
 pSurf_lapse=t(pSurf_lapseT)
-write.table(pSurf_lapse,'pSurf_lapse.txt', row.names=F, sep=',')
+write.table(round(pSurf_lapse,2),'pSurf_lapse.txt', row.names=F, sep=',')
 
 
