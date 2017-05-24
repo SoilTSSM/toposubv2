@@ -9,8 +9,14 @@ find $wd/* -delete
 ./runTopoSUB.sh
 ./runTopoSCALE.sh
 ./setupGeotopSim.sh
-
 ./runLSM.sh
+
+#if $informSample == TRUE
+# ./informSample.sh
+# ./runTopoSCALE.sh
+# ./setupGeotopSim.sh
+# ./runLSM.sh
+
 ./getMODIS_SCA.sh TRUE #should be false but does not work yet
 
 # run model

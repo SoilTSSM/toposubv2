@@ -14,17 +14,18 @@ source('gt_control.R')
 #====================================================================
 args = commandArgs(trailingOnly=TRUE)
 wd=args[1]
+lsmPath=args[2]
 
 
 
 #========================================================================
 #               make batch file
 #========================================================================
-
-batchfile=paste(spath,'/batch.txt',sep='')
+setwd(wd)
+batchfile='batch.txt'
 file.create(batchfile)
 
-sim_entries=paste(spath,'/result/S*',sep='')
+sim_entries='result/S*'
 write(paste('cd ',exePath,sep=''),file=batchfile,append=T)
 write(paste('parallel', exe, ':::', sim_entries, sep=' '),file=batchfile,append=T)
 

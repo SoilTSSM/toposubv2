@@ -2,33 +2,24 @@
 # SETUP
 #====================================================================
 #INFO
-#in = ele,asp,slp (minimum)
-#out = listpoints.txt file, landforms.tif map
 
 #DEPENDENCY
-require(rgdal)
 require(raster)
-
 #SOURCE
 source("toposub_src.R")
-
 #====================================================================
 # PARAMETERS/ARGS
 #====================================================================
 args = commandArgs(trailingOnly=TRUE)
 gridpath=args[1]
 Nclust=args[2]
-Ngrid=args[3]
-# # test if there is at least one argument: if not, return an error
-# if (length(args)==0) {
-#  # stop("At least one argument must be supplied (Nclust)", call.=FALSE)} 
-# print("WARNING: using default value Nclust=10")
-# args[1] = 10} 
-# #else if (length(args)==1) {
-#   # default output file
-#  # args[1] = 10
-# #}
+targV=args[3]
+svfCompute=args[4]
+#Nclust=args[2] #'/home/joel/sim/topomap_test/grid1' #
 
+#====================================================================
+# PARAMETERS FIXED
+#====================================================================
 #====================================================================
 # PARAMETERS FIXED
 #====================================================================
@@ -40,13 +31,18 @@ nstart1=10 	# nstart for sample kmeans [find centers]
 nstart2=1 	# nstart for entire data kmeans [apply centers]
 thresh_per=0.001 # needs experimenting with
 samp_reduce=FALSE
+#====================================================================
+#			TOPOSUB PREPROCESSOR INFORMED SAMPLING		
+#====================================================================
+setwd(gridpath)
 
-#**********************  SCRIPT BEGIN *******************************
-print(paste0('Running TOPOSUB on ',Nclust,' samples'))
+#set tmp directory for raster package
+#setOptions(tmpdir=paste(gridpath, '/tmp', sep=''))
 
-#==============================================================================
-# TopoSUB preprocessor
-#==============================================================================
+#read listpoint
+listpoints=read.table(paste(gridpath,'/listpoints.txt',sep=''), sep='\t',header=T)
+
+
 setwd(paste0(gridpath,'/predictors'))
 predictors=list.files( pattern='*.tif')
 
@@ -64,78 +60,71 @@ gridmaps$aspS<-res$aspS
 allNames<-names(gridmaps@data)
 predNames2 <- allNames[which(allNames!='surface'&allNames!='asp')]
 
-#sample inputs
-#need to generalise to accept 'data' argument
+
+
+#initialise file to write to
+pvec<-rbind(predNames2)
+x<-cbind("tv",pvec,'r2')
+write.table(x, paste(gridpath,"/coeffs.txt",sep=""), sep=",",col.names=F, row.names=F)
+write.table(x, paste(gridpath,"/decompR.txt",sep=""), sep=",",col.names=F, row.names=F)
+
+# read mean values of targV
+meanX=read.table( paste(gridpath, '/meanX_', targV,'.txt', sep=''), sep=',')
+
+# compute coeffs of linear model
+coeffs=linMod2(meanX=meanX,listpoints=listpoints, predNames=predNames2,col=targV, svfCompute=FALSE) #linear model
+
+write(coeffs, paste(gridpath,"/coeffs.txt",sep=""),ncolumns=7, append=TRUE, sep=",") # 6 cols if no svf
+weightsMean<-read.table(paste(gridpath,"/coeffs.txt",sep=""), sep=",",header=T)
+
+#==========mean coeffs table for multiple preds ================================
+#coeffs_vec=meanCoeffs(weights=weights, nrth=nrth) #rmove nrth
+##y<-rbind(predNames)
+#y <- cbind(y,'r2')
+#write.table(y, paste(egridpath,"/coeffs_Mean.txt",sep=""), sep=",",col.names=F, row.names=F)
+#write(coeffs_vec, paste(egridpath,"/coeffs_Mean.txt",sep=""),ncolumns=(length(predNames)+1), append=TRUE, sep=",")
+#weightsMean<-read.table(paste(egridpath,"/coeffs_Mean.txt",sep=""), sep=",",header=T)	
+	
 samp_dat<-sampleRandomGrid( nRand=nRand, predNames=predNames2)
 
-# find number of clusters required
-#if (findn==1){Nclust=findN(scaleDat=scaleDat, nMax=1000,thresh=0.05)}
-
-#make scaled (see r function 'scale()')data frame of inputs 
-scaleDat_samp= simpleScale(data=samp_dat, pnames=predNames2)
-
-#random order of kmeans init conditions (variable order) experiment
-#if(randomKmeansInit==T){
-#cbind(scaleDat_samp[5],scaleDat_samp[4], scaleDat_samp[3], scaleDat_samp[2], scaleDat_samp[1])->scaleDat_samp}
+#use original samp_dat
+informScaleDat1=informScale(data=samp_dat, pnames=predNames2,weights=weightsMean)
 
 #remove NA's from dataset (not tolerated by kmeans)
-scaleDat_samp2=na.omit(scaleDat_samp)
+informScaleDat_samp=na.omit(informScaleDat1)
+
 #kmeans on sample
-
-#clust1=Kmeans(scaleDat=scaleDat_samp2,iter.max=iter.max,centers=Nclust, nstart=nstart1)
-clust1 <- kmeans(x=scaleDat_samp2, centers=Nclust, iter.max = iter.max, nstart = nstart1, trace=FALSE)
-#http://stackoverflow.com/questions/21382681/kmeans-quick-transfer-stage-steps-exceeded-maximum
-
-
-     ## S3 method for class 'kmeans'
-
-#**CLEANUP**
-rm(scaleDat_samp)
-rm(scaleDat_samp2)
-#rm(samp_dat)
-gc()
-
-
+clust1=Kmeans(scaleDat=informScaleDat_samp,iter.max=iter.max,centers=Nclust, nstart=nstart1)
 #scale whole dataset
-scaleDat_all= simpleScale(data=gridmaps@data, pnames=predNames2)
+informScaleDat2=informScale(data=gridmaps@data, pnames=predNames2,weights=weightsMean)
 
 #remove NA's from dataset (not tolerated by kmeans)
-scaleDat_all2=na.omit(scaleDat_all)
+informScaleDat_all=na.omit(informScaleDat2)
 #kmeans whole dataset
-
-#clust2=Kmeans(scaleDat=scaleDat_all2,iter.max=iter.max,centers=clust1$centers, nstart=nstart2)
-clust2 <- kmeans(x=scaleDat_all2, centers=clust1$centers, iter.max = iter.max, nstart = nstart2, trace=FALSE)
-#http://stackoverflow.com/questions/21382681/kmeans-quick-transfer-stage-steps-exceeded-maximum
-
-#**CLEANUP**
-rm(scaleDat_all2)
-rm(clust1)
-gc()
+clust2=Kmeans(scaleDat=informScaleDat_all,iter.max=iter.max,centers=clust1$centers, nstart=nstart2)
 
 #remove small samples, redist to nearestneighbour attribute space
 if(samp_reduce==TRUE){
 clust3=sample_redist(pix= length(clust2$cluster),samples=Nclust,thresh_per=thresh_per, clust_obj=clust2)# be careful, samlple size not updated only clust2$cluster changed
 }else{clust2->clust3}
 
-#**CLEANUP**
-rm(clust2)
-gc()
 #confused by these commented out lines
 #gridmaps$clust <- clust3$cluster
-#write.asciigrid(gridmaps["landform"], paste(spath,"/landform_",Nclust,".tif",sep=''),na.value=-9999)
+#write.asciigrid(gridmaps["landform"], paste(egridpath,"/landform_",Nclust,".tif",sep=''),na.value=-9999)
 
 #make map of clusters 
 
 # new method to deal with NA values 
-#index of non NA index
-n2=which(is.na(scaleDat_all$aspC)==FALSE)
+#vector of non NA index
+n2=which(is.na(informScaleDat2$aspC)==FALSE)
 #make NA vector
-vec=rep(NA, dim(scaleDat_all)[1])
+vec=rep(NA, dim(informScaleDat2)[1])
 #replace values
 vec[n2]<-as.factor(clust3$cluster)
 
+
 #**CLEANUP**
-rm(scaleDat_all)
+rm(informScaleDat_all)
 #gc()
 
 #gridmaps$landform <- as.factor(clust3$cluster)
@@ -143,7 +132,7 @@ gridmaps$landform <-vec
 #writeRaster(raster(gridmaps["landform"]), paste(spath,"/landform_",Nclust,".tif",sep=''),NAflag=-9999,overwrite=T)
 rst=raster(gridmaps["landform"])
 writeRaster(rst, paste0(gridpath,"/landform.tif"),NAflag=-9999,overwrite=T)
-pdf(paste0(gridpath,'/landforms.pdf'))
+pdf(paste0(gridpath,'/landformsInform.pdf'))
 plot(rst)
 dev.off()
 samp_mean <- aggregate(gridmaps@data[predNames2], by=list(gridmaps$landform), FUN='mean')
@@ -172,7 +161,7 @@ lsp<-data.frame(members,samp_mean)
 
 write.table(round(lsp,2),paste0(gridpath, '/listpoints.txt'), sep='\t', row.names=FALSE)
 
-pdf(paste0(gridpath, '/sampleDistributions.pdf'), width=6, height =12)
+pdf(paste0(gridpath, '/sampleDistributionsInform.pdf'), width=6, height =12)
 par(mfrow=c(3,1))
 hist(lsp$ele)
 hist(lsp$slp)
@@ -180,13 +169,11 @@ hist(lsp$asp)
 hist(lsp$members)
 dev.off()
 
-#make horizon files MOVED TO SEPERATE SCRISPT
-#hor(listPath='.')
+
+
+print("TOPOSUB INFORM COMPLETE!")
 
 
 
-#get modal surface type of each sample 1=debris, 2=steep bedrock, 3=vegetation
-#zoneStats=getSampleSurface(spath=spath,Nclust=Nclust, predFormat=predFormat)
-#write.table(zoneStats, paste(spath,'/landcoverZones.txt',sep=''),sep=',', row.names=F)
 
-print("TOPOSUB COMPLETE!")
+

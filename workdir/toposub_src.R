@@ -300,20 +300,27 @@ return(x)
 #==============================================================================
 
 #just coefficients
-linMod2 <- function(meanX, listpoints,col, predNames){
+linMod2 <- function(meanX, listpoints,col, predNames, svfCompute){
 require(MASS)
-require(relaimpo)
+#require(relaimpo)
 require(nlme)
 
 #loop to create dataframe of TV and predictors
 	names(meanX)<-'meanX'
 	dat <- meanX
-	for (pred in predNames2){
+	for (pred in predNames){
 		dat <- data.frame(dat, listpoints[pred])
 	}
+if(svfCompute == TRUE)
+	{
+	fit <- lm(meanX ~  ele  + slp + svf + aspC + aspS, dat=dat) #gls gives no r squared
+	}
 
-fit <- lm(meanX ~  ele  + slp + svf + aspC + aspS, dat=dat) #gls gives no r squared
-
+if(svfCompute == FALSE)
+	{
+	fit <- lm(meanX ~  ele  + slp + aspC + aspS, dat=dat)
+	}
+	
 	# !remember order of coeffs is tied to order of header in cryosub_prog [order of predNames]! ==> potential bug - fix
 
 	coef<-coefficients(fit)
@@ -329,10 +336,12 @@ meanCoeffs <- function(weights, nrth){
 	
 	ele <- mean(abs(weights$ele))
 	slp<- mean(abs(weights$slp))
-	svf<- mean(abs(weights$svf))
+
+	if(svfCompute == TRUE)	{	svf<- mean(abs(weights$svf))	}
 	aspS<- mean(abs(weights$aspS))
 	aspC<- mean(abs(weights$aspC))
-	x<-c(ele,slp,svf,aspC,aspS)
+	if(svfCompute == TRUE){x<-c(ele,slp,svf,aspC,aspS)}
+	if(svfCompute == FALSE){x<-c(ele,slp,aspC,aspS)}
 	coeff_vec<- (x/sum(x))
 	r2 <- mean(weights$r2)
 	x<-c(coeff_vec,r2)
