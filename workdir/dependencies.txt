@@ -14,6 +14,7 @@ gdal
 gdal-config (sudo apt install libgdal-dev)
 R
 python
+cdo 
 
 #accounts
 NASA data: DEM MODIS: https://urs.earthdata.nasa.gov/profile
