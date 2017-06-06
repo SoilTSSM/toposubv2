@@ -17,8 +17,8 @@ args = commandArgs(trailingOnly=TRUE)
 wd=args[1]
 demDir=args[2]
 #runtype=args[2]
-bbox=as.numeric(unlist(strsplit( args[3],",")))
-#grid=args[3]
+pointsFile=args[3]
+grid=as.numeric(args[4])
 #points input
 #lon=c(85.52 ,85.68,84.2)
 #lat=c(28.1 ,28.3, 27.8)
@@ -51,57 +51,65 @@ setwd(demDir)
 # DEM retrieval based on set of points:
 #====================================================================
 # if (runtype == "points"){
-# 	setwd(demDir)
-# 	df=data.frame(lon,lat)
-
-# 	#find unique llcorner
-# 	df2=unique(floor(df))
-
-# 	#clean up
-# 	system("rm SRTMDAT*")
-# 	system("rm *.hgt")
-
-# 	for (i in 1:(dim(df2)[1])){
-# 		if (sign(df2$lat[i])==-1){LATVAL<-"S"}
-# 		if (sign(df2$lat[i])==1){LATVAL<-"N"}
-# 		if (sign(df2$lon[i])==-1){LONVAL<-"W"}
-# 		if (sign(df2$lon[i])==1){LONVAL<-"E"}
-# 		lon_pretty=formatC(df2$lon[i],width=3,flag="0")
-# 		#get tile
-# 		filetoget=paste0(LATVAL,df2$lat[i],LONVAL,lon_pretty,".SRTMGL1.hgt.zip")
-# 		filetogetUNZIP=paste0(LATVAL,df2$lat[i],LONVAL,lon_pretty,".hgt")
-
-# 	if (file.exists(filetoget)){ #dont download again
-# 	   print(paste0(filetoget, " exists"))
-# 	   	system(paste0("unzip ", filetoget))
-# 		system(paste0("gdal_translate -q -co TILED=YES -co COMPRESS=DEFLATE -co ZLEVEL=9 -co PREDICTOR=2 ", filetogetUNZIP, " SRTMDAT",i,".tif"))
-# 		} else {
-		 
-# 			system(paste0("wget --user ", USER ,  " --password " ,PWD, " http://e4ftl01.cr.usgs.gov//MODV6_Dal_D/SRTM/SRTMGL1.003/2000.02.11/",filetoget))
-# 			# extract
-# 			system(paste0("unzip ", filetoget))
-# 			system(paste0("gdal_translate -q -co TILED=YES -co COMPRESS=DEFLATE -co ZLEVEL=9 -co PREDICTOR=2 ", filetogetUNZIP, " SRTMDAT",i,".tif"))
-# 		}
-# 	}
-# }
-#
-
-
-#====================================================================
-# DEM retrieval based on bbox
-#====================================================================
-#if (runtype == "bbox"){
 	setwd(demDir)
-	floorbox=floor(bbox)
-	lonseq=seq(floorbox[1],floorbox[3],1)
-	latseq=seq(floorbox[2],floorbox[4],1)
-	gridstoget=expand.grid(lonseq,latseq)
-	names(gridstoget)<-c("lon", "lat")
-	df2<-gridstoget
+	df=read.csv(pointsFile)
+
+
+
+	# section to buffer points which will be exclude by cliptoera.R. ERA grid coords are centres whereas dem is llcorner, therefore there is half a grid resolution offset.
+	revtrunc <- function(x) { x - floor(x) } 
+
+	lowbuffer = grid/2
+	upperbuffer = 1 - (grid/2)
+	newgrid=c()
+
+	# check longitudes
+	for (i in 1:length(df[,1])){
+	# check if longitude is below lower buffer
+		if (revtrunc(df[i,1]) < lowbuffer) {
+		lon=floor(df[i,1]) -1
+		lat = df[i,2]
+		newcoords=data.frame(lon,lat)
+		newgrid=rbind(newgrid, newcoords)
+		}
+	# check if longitude is above upper buffer
+		if (revtrunc(df[i,1]) > upperbuffer) {
+		lon=floor(df[i,1]) +1
+		lat = df[i,2]
+		newcoords=data.frame(lon,lat)
+		newgrid=rbind(newgrid, newcoords)
+		}
+	}
+
+	# check latitudes
+	newgridLat=c()
+	for (i in 1:length(df[,2])){
+	# check if longitude is below lower buffer
+		if (revtrunc(df[i,2]) < lowbuffer) {
+		lat=floor(df[i,2]) -1
+		lon = df[i,1]
+		newcoords=data.frame(lon,lat)
+		newgrid=rbind(newgrid, newcoords)
+		}
+	# check if longitude is above upper buffer
+		if (revtrunc(df[i,2]) > upperbuffer) {
+		lat=floor(df[i,2]) +1
+		lon = df[i,1]
+		newcoords=data.frame(lon,lat)
+		newgrid=rbind(newgrid, newcoords)
+		}
+	}
+
+names(newgrid) <-names(df)
+df=rbind (df, newgrid)
+
+	#find unique llcorner coords
+	df2=unique(floor(df))
+
 
 	ngrids=length(df2[,1])
 	print (paste0("Retrieving ",ngrids, " SRTM30 grids (1x1 deg)"))
-	#cleanup
+	#clean up
 	system("rm SRTMDAT*")
 	system("rm *.hgt")
 
@@ -127,6 +135,47 @@ setwd(demDir)
 			system(paste0("gdal_translate -q -co TILED=YES -co COMPRESS=DEFLATE -co ZLEVEL=9 -co PREDICTOR=2 ", filetogetUNZIP, " SRTMDAT",i,".tif"))
 		}
 	}
+# }
+#
+
+
+#====================================================================
+# DEM retrieval based on bbox
+#====================================================================
+#if (runtype == "bbox"){
+	# setwd(demDir)
+	# floorbox=floor(bbox)
+	# lonseq=seq(floorbox[1],floorbox[3],1)
+	# latseq=seq(floorbox[2],floorbox[4],1)
+	# gridstoget=expand.grid(lonseq,latseq)
+	# names(gridstoget)<-c("lon", "lat")
+	# df2<-gridstoget
+	# #cleanup
+	# system("rm SRTMDAT*")
+	# system("rm *.hgt")
+
+	# for (i in 1:(dim(df2)[1])){
+	# 	if (sign(df2$lat[i])==-1){LATVAL<-"S"}
+	# 	if (sign(df2$lat[i])==1){LATVAL<-"N"}
+	# 	if (sign(df2$lon[i])==-1){LONVAL<-"W"}
+	# 	if (sign(df2$lon[i])==1){LONVAL<-"E"}
+	# 	lon_pretty=formatC(df2$lon[i],width=3,flag="0")
+	# 	#get tile
+	# 	filetoget=paste0(LATVAL,df2$lat[i],LONVAL,lon_pretty,".SRTMGL1.hgt.zip")
+	# 	filetogetUNZIP=paste0(LATVAL,df2$lat[i],LONVAL,lon_pretty,".hgt")
+
+	# if (file.exists(filetoget)){ #dont download again
+	#    print(paste0(filetoget, " exists"))
+	#    	system(paste0("unzip ", filetoget))
+	# 	system(paste0("gdal_translate -q -co TILED=YES -co COMPRESS=DEFLATE -co ZLEVEL=9 -co PREDICTOR=2 ", filetogetUNZIP, " SRTMDAT",i,".tif"))
+	# 	} else {
+		 
+	# 		system(paste0("wget --user ", USER ,  " --password " ,PWD, " http://e4ftl01.cr.usgs.gov//MODV6_Dal_D/SRTM/SRTMGL1.003/2000.02.11/",filetoget))
+	# 		# extract
+	# 		system(paste0("unzip ", filetoget))
+	# 		system(paste0("gdal_translate -q -co TILED=YES -co COMPRESS=DEFLATE -co ZLEVEL=9 -co PREDICTOR=2 ", filetogetUNZIP, " SRTMDAT",i,".tif"))
+	# 	}
+	# }
 #}
 #====================================================================
 # MERGE RASTER

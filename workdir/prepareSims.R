@@ -29,7 +29,7 @@ setwd(wd)
 dir.create(paste0('grid',i), showWarnings=FALSE)
 dir.create(paste0('grid',i,'/predictors'), showWarnings=FALSE)
 setwd(paste0(wd,'/predictors'))
-predictors=list.files(pattern='*.tif')
+predictors=list.files(pattern='*.tif$')
 Npreds=length(predictors)
 
 	for (p in 1:Npreds){

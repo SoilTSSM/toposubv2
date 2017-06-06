@@ -8,4 +8,3 @@ Rscript toposcale_pre.R $wd $startDate $endDate
 
 # Prepare sim predicters and directories per ERA-grid
 Rscript prepareSims.R $wd
-

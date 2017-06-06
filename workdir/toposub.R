@@ -48,7 +48,7 @@ print(paste0('Running TOPOSUB on ',Nclust,' samples'))
 # TopoSUB preprocessor
 #==============================================================================
 setwd(paste0(gridpath,'/predictors'))
-predictors=list.files( pattern='*.tif')
+predictors=list.files( pattern='*.tif$')
 
 print(predictors)
 rstack=stack(predictors)

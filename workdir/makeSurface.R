@@ -56,7 +56,7 @@ mydates=c("2000-08-12", "2004-08-12","2008-08-12","2012-08-12","2016-08-12")
 #scale product by 0.0001 to get 0-1
 
 setwd(outDirPath)
-modStack=stack(list.files(pattern='*.tif', recursive = TRUE))
+modStack=stack(list.files(pattern='*.tif$', recursive = TRUE))
 print("The following rasterStack will be used to compute avergae NDVI:")
 print(modStack)
 

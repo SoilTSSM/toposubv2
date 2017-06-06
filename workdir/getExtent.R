@@ -13,7 +13,7 @@ require(raster)
 r=raster(file)
 myextent=extent(r)
 
-if (coord=='lonW'){cat(as.numeric(myextent@ymin))}
-if (coord=='lonE'){cat(as.numeric(myextent@ymax))}
-if (coord=='latN'){cat(as.numeric(myextent@xmax))}
-if (coord=='latS'){cat(as.numeric(myextent@xmin))}
+if (coord=='lonW'){cat(as.numeric(myextent@xmin))}
+if (coord=='lonE'){cat(as.numeric(myextent@xmax))}
+if (coord=='latN'){cat(as.numeric(myextent@ymax))}
+if (coord=='latS'){cat(as.numeric(myextent@ymin))}

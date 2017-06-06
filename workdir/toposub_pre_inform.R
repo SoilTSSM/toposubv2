@@ -44,7 +44,7 @@ listpoints=read.table(paste(gridpath,'/listpoints.txt',sep=''), sep='\t',header=
 
 
 setwd(paste0(gridpath,'/predictors'))
-predictors=list.files( pattern='*.tif')
+predictors=list.files( pattern='*.tif$')
 
 print(predictors)
 rstack=stack(predictors)

@@ -6,19 +6,19 @@
 
 #DEPENDENCY
 require(raster)
+require(rgdal)
 #SOURCE
 
 #====================================================================
 # PARAMETERS/ARGS
 #====================================================================
 args = commandArgs(trailingOnly=TRUE)
-valdat=args[1]
+valDat=args[1]
 modDat=args[2]
-magstCol=args[3]
-lonCol=args[4]
-latCol=args[5]
-gridPath=args[6]
-
+magstCol=as.numeric(args[3])
+lonCol=as.numeric(args[4])
+latCol=as.numeric(args[5])
+gridPath=args[6] #/home/joel/sim/topomap_test//grid1
 
 #====================================================================
 # PARAMETERS FIXED
@@ -26,30 +26,29 @@ gridPath=args[6]
 
 #**********************  SCRIPT BEGIN *******************************
 setwd(gridPath)
-dat= read.table(valdat, sep=',', header=TRUE)
+dat= read.table(valDat, sep=',', header=TRUE)
 
 
 # FUNCTION
-makePointShapeGeneriRc=function(lon,lat,data,proj='+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
-	{
-	library(raster)
-	library(rgdal)
-	loc<-data.frame(lon, lat)
-	spoints<-SpatialPointsDataFrame(loc,as.data.frame(data), proj4string= CRS(proj))
-	return(spoints)
-	}
-
-#CODE
-shp=makePointShapeGeneriRc(lon=dat[,lonCol],lat=dat[,latCol],data=dat,proj='+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs')
-
-
-rst=raster(('landform.tif')
+proj='+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
+lon=dat[,lonCol]
+lat=dat[,latCol]
+loc<-data.frame(lon, lat)
+shp<-SpatialPointsDataFrame(loc,as.data.frame(dat), proj4string= CRS(proj))
+	
+rst=raster('landform.tif')
 cp <- as(extent(rst), "SpatialPolygons")
-id=which(over(shp, cp)==1)
-plot(shp)
-plot(rst, add=T)
+
 valpoints=extract(rst,shp)
 valIndex=which(is.na(valpoints)==FALSE)
 magstVal= dat$Temp[valIndex]
 modfile=read.table(modDat)
-magstMod=magstMod[valIndex]
+magstMod=modfile[valpoints[valIndex],]
+
+if (length(magstVal)==0) {
+	print("No val points in this grid")
+} else {
+	print(magstMod)
+	print(magstVal)
+	plot(magstMod, magstVal, xlab='modelled', ylab='measured')
+}

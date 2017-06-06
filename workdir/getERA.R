@@ -62,7 +62,7 @@ grd=paste0(grid,'/',grid)	# resolution long/lat (0.75/0.75) or grid single integ
 #===============================================================================
 #				GET BBOX FROM raster
 #===============================================================================
-if (runtype == "bbox"){
+#if (runtype == "bbox"){
 eraExtent=raster(paste0(wd,'/spatial/eraExtent.tif'))
 tol=as.numeric(grid)/2 #converts extent based on boundary to extent based on grid centres
 xtent=extent(eraExtent)
@@ -71,7 +71,7 @@ s=xtent@ymin+tol
 e=xtent@xmax-tol
 w=xtent@xmin+tol
 ar= paste(n,w,s,e,sep='/')# region of interest N/W/S/E this corresponds to box centres
-}
+#}
 
 print(paste0('Requesting ERA-grids within extent', ar))
 #===============================================================================
