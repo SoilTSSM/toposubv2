@@ -69,8 +69,8 @@ geotopEnd=format(d, '%d/%m/%Y %H:%M')
 #bedrock [2]
 
 surface=read.table('landcoverZones.txt',header=T, sep=',')
-mf=read.table('listpoints.txt',header=TRUE,sep='\t')
-npoints=length(mf$id)
+mf=read.csv('listpoints.txt')
+npoints=dim(mf)[1]
 
 # combine to dataframe
 ThetaRes = c(ThetaRes1,ThetaRes2,ThetaRes0)
@@ -83,7 +83,7 @@ surfacedf=data.frame(ThetaRes,ThetaSat,AlphaVanGenuchten,NVanGenuchten,NormalHyd
 
 
 for(i in 1:npoints){
-	simindex=paste0('S',formatC(mf$id[i], width=5,flag='0'))
+	simindex=paste0('S',formatC(i, width=5,flag='0'))
 #expRoot= paste(spath, '/sim',i, sep='')
 parfilename='geotop.inpts'
 fs=readLines(geotopInputsPath) 

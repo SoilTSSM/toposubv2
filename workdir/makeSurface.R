@@ -50,7 +50,7 @@ myextent=raster('predictors/ele.tif') # output is projected and clipped to this 
 
 mydates=c("2000-08-12", "2004-08-12","2008-08-12","2012-08-12","2016-08-12")
 	for (mydate in mydates){
-
+	print (paste0('computing NDVI for ', mydate))	
 	runGdal(product='MOD13Q1', collection = NULL, begin = mydate, end = mydate, extent = myextent, tileH = NULL, tileV = NULL, buffer = 0,SDSstring = "1 0 0 0 0 0 0 0 0 0 0 0", job = NULL, checkIntegrity = TRUE, wait = 0.5, forceDownload = TRUE, overwrite = FALSE)
 	}
 #scale product by 0.0001 to get 0-1

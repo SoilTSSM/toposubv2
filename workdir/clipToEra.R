@@ -33,17 +33,23 @@ s=xtent@ymin-tol
 e=xtent@xmax+tol
 w=xtent@xmin-tol
 ar= paste(n,w,s,e,sep='/')# region of interest N/W/S/E this corresponds to box centres
-t='00/12'#00/12 gives 3hr data for sfc retrieval ; 00/06/12/18 gives 6hr data for pl retrieval (3hr not possible) ; 00/12 for accumulated
-stp='3/6/9/12'#3/6/9/12 gives 3hr data for sfc ; 0 gives 6hr data for pl retrieval (3hr not possible)
+t='00'#00/12 gives 3hr data for sfc retrieval ; 00/06/12/18 gives 6hr data for pl retrieval (3hr not possible) ; 00/12 for accumulated
+stp='3'#3/6/9/12 gives 3hr data for sfc ; 0 gives 6hr data for pl retrieval (3hr not possible)
 lt='sfc'# sfc=surface or pl=pressure level
-typ='fc'#an=analysis or fc=forecast, depends on parameter - check on ERA gui.
-par= 168# parameter code - check on ERA gui.
+typ='an'#an=analysis or fc=forecast, depends on parameter - check on ERA gui.
+par= 168.128# parameter code - check on ERA gui.
 tar='spatial/eraExtent.nc'
 grd=paste0(grid,'/',grid)
-dd="20121230/to/20121231"
+dd="20121230/to/20121230"
 
-#request
+#request to EWMF
+print('Requesting data from ECWMF.....')
+t1=Sys.time()
 getERA(dd=dd, t=t, grd=grd, stp=stp, lt=lt,typ=typ,par=par,ar=ar,tar=tar,plev=NULL,workd=wd)
+t2 <- Sys.time()
+t3 <- t2 - t1
+print('Request complete')
+print(t3)
 eraExtent=raster('spatial/eraExtent.nc')
 
 # crop domain to era grids completely covered by DEM - this will lose margin of dem

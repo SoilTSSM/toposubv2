@@ -21,12 +21,12 @@ nbox=as.numeric(args[2])
 
 #**********************  SCRIPT BEGIN *******************************
 setwd(wd)
-coordmapfile='../eraDat/strd.nc'
+coordmapfile='../eraDat/SURF.nc'
 
 #===========================================================================
 #				POINTS
 #===========================================================================
-mf=read.table('listpoints.txt',header=TRUE,sep='\t')
+mf=read.csv('listpoints.txt')
 npoints=length(mf$id)
 
 #=======================================================================================================

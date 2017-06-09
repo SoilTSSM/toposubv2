@@ -170,7 +170,7 @@ members<-mem$ele
 colnames(samp_mean)[1] <- "id"
 lsp<-data.frame(members,samp_mean)
 
-write.table(round(lsp,2),paste0(gridpath, '/listpoints.txt'), sep='\t', row.names=FALSE)
+write.csv(round(lsp,2),paste0(gridpath, '/listpoints.txt'), row.names=FALSE)
 
 pdf(paste0(gridpath, '/sampleDistributions.pdf'), width=6, height =12)
 par(mfrow=c(3,1))

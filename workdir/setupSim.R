@@ -27,8 +27,8 @@ setwd(wd)
 #===========================================================================
 #				POINTS
 #===========================================================================
-mf=read.table('listpoints.txt',header=TRUE,sep='\t')
-npoints=length(mf$id)
+mf=read.csv('listpoints.txt')
+npoints=dim(mf)[1]
 
 
 #========================================================================
@@ -69,7 +69,7 @@ tail(Date)
 	for(i in 1:npoints)
 	{
 		#create directories for sims
-		simindex=paste0('S',formatC(mf$id[i], width=5,flag='0'))
+		simindex=paste0('S',formatC(i, width=5,flag='0'))
 		dir.create(simindex, recursive=TRUE)
 		dir.create(paste0(simindex,'/out'), recursive=TRUE)
 		dir.create(paste0(simindex,'/rec'), recursive=TRUE)
@@ -115,17 +115,6 @@ tail(Date)
 		{
 			hor(listPath=simindex)
 		}
-
-
-	#get modal surface type of each sample 1=debris, 2=steep bedrock, 3=vegetation
-	lc=raster('predictors/surface.tif')
-	zones=raster('landform.tif')
-	zoneStats=zonal(lc,zones, modal,na.rm=T)
-	write.table(zoneStats,'landcoverZones.txt',sep=',', row.names=F)
-
-
-
-
 
 
 	}

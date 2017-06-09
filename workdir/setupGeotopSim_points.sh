@@ -13,8 +13,10 @@ for Ngrid in $(seq 1 $ncells); do
    	echo "Grid "$Ngrid" has been removed because it contained no points. Now processing "$Ngrid+1
    	continue
  	fi
-
+ 	echo 'setting up simulations....'
 	Rscript setupSim.R $gridpath $svfCompute
-	Rscript modalSurface.R 
+	echo "extract surface properties"
+	Rscript pointsSurface.R $gridpath $
+	echo 'making inputs file'
 	Rscript makeGeotopInputs.R $gridpath $geotopInputsPath $startDate $endDate
 done

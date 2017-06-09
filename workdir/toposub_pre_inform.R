@@ -40,7 +40,7 @@ setwd(gridpath)
 #setOptions(tmpdir=paste(gridpath, '/tmp', sep=''))
 
 #read listpoint
-listpoints=read.table(paste(gridpath,'/listpoints.txt',sep=''), sep='\t',header=T)
+listpoints=read.csv(paste(gridpath,'/listpoints.txt',sep=''))
 
 
 setwd(paste0(gridpath,'/predictors'))
@@ -159,7 +159,7 @@ members<-mem$ele
 colnames(samp_mean)[1] <- "id"
 lsp<-data.frame(members,samp_mean)
 
-write.table(round(lsp,2),paste0(gridpath, '/listpoints.txt'), sep='\t', row.names=FALSE)
+write.csv(round(lsp,2),paste0(gridpath, '/listpoints.txt'), row.names=FALSE)
 
 pdf(paste0(gridpath, '/sampleDistributionsInform.pdf'), width=6, height =12)
 par(mfrow=c(3,1))

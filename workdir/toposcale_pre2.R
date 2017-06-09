@@ -262,9 +262,6 @@ load(file=paste(outRootSurf, '/dates', sep=''))
 startDateHMS=as.character(format(as.Date(startDate,'%Y-%m-%d'), '%Y-%m-%d %H:%M:%S'))
 endDateHMS=as.character(format(as.Date(endDate,'%Y-%m-%d'), '%Y-%m-%d %H:%M:%S'))
 
-print(datesPl[1])
-print(datesSurf[1])
-
 #cut dates - output files should be identical
 n1p=which(as.character(datesPl)==startDateHMS)
 n2p=which(as.character(datesPl)==endDateHMS)

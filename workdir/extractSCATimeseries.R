@@ -14,51 +14,22 @@ require(raster)
 # PARAMETERS/ARGS
 #====================================================================
 args = commandArgs(trailingOnly=TRUE)
-wd=args[1] 
+wd=args[1]
+sca_wd=args[2] 
+shpname=args[3] 
 
-wd=
+wd='/home/joel/sim/topomap_points/'
+sca_wd='/home/joel/data/MODIS_ARC/SCA/data/Snow_Cov_Daily_500m_v5/SC'
+shpname = '/home/joel/sim/topomap_points/spatial/points.shp' 
 
-'/home/joel/data/MODIS_ARC/SCA'
-
-
-
-'/home/joel/data/MODIS_ARC/SCA/Snow_Cov_Daily_500m_v5/Time_Series/RData/MYD10_A1_SC_365_2012_78_2013_RData.RData'
-'/home/joel/data/MODIS_ARC/SCA/Snow_Cov_Daily_500m_v5/Time_Series/RData/MOD10_A1_SC_365_2012_90_2013_RData.RData'
-'/home/joel/data/MODIS_ARC/SCA/Snow_Cov_Daily_500m_v5/Time_Series/RData/MOD10_A1_MYD10_A1_SC_365_2012_90_2013_RData.RData'
-
-/home/joel/data/MODIS_ARC/SCA/Snow_Cov_Daily_500m_v5/Time_Series/RData/MOD10_A1_MYD10_A1_SC_365_2012_90_2013_RData.RData
 
 #Set the input paths to raster and shape file
-infile = '/home/joel/data/MODIS_ARC/SCA/Snow_Cov_Daily_500m_v5/Time_Series/RData/MOD10_A1_SC_1_2013_6_2013_RData.RData'
-shpname = '/home/joel/data/GCOS/metadata_easy.shp'  
+setwd(sca_wd)
 shp = shapefile(shpname)
-#Set the start/end dates for extraction
-#startdate = as.Date("2013-01-01")  
-#enddate = as.Date("2013-01-06")    
-#Load the RasterStack
-inrts = get(load(infile)) 
-# Compute average and St.dev
-#dataavg = MODIStsp_extract(inrts, shpname, startdate, enddate, FUN = 'mean', na.rm = T)
-#datasd = MODIStsp_extract (inrts, shpname, startdate, enddate, FUN = 'sd', na.rm = T)
-# Plot average time series for the polygons
-#plot.xts(dataavg) 
-
-MOD = extract(inrts, shp)
-
-infile = '/home/joel/data/MODIS_ARC/SCA/Snow_Cov_Daily_500m_v5/Time_Series/RData/MYD10_A1_SC_1_2013_6_2013_RData.RData'
-shpname = '/home/joel/data/GCOS/metadata_easy.shp'  
-shp = shapefile(shpname)
-#Set the start/end dates for extraction
-#startdate = as.Date("2013-01-01")  
-#enddate = as.Date("2013-01-06")    
-#Load the RasterStack
-inrts = get(load(infile)) 
-# Compute average and St.dev
-#dataavg = MODIStsp_extract(inrts, shpname, startdate, enddate, FUN = 'mean', na.rm = T)
-#datasd = MODIStsp_extract (inrts, shpname, startdate, enddate, FUN = 'sd', na.rm = T)
-# Plot average time series for the polygons
-#plot.xts(dataavg) 
-MYD = extract(inrts, shp)
+rstack=stack(list.files(pattern='MOD*'))
+MOD = extract(rstack, shp)
+rstack=stack(list.files(pattern='MYD*'))
+MYD = extract(rstack, shp)
 
 # Combine timeseries
 MOD[MOD > 100]  <- NA
@@ -66,5 +37,42 @@ MYD[MYD > 100]  <- NA
 npoints = dim(MOD)[1]
 
 
- my.na <- is.na(MOD)
- MOD[my.na] <- MYD[my.na]
+my.na <- is.na(MOD)
+MOD[my.na] <- MYD[my.na]
+
+#construct dates
+date = c()
+names(rstack)
+for(i in 1: length( names(rstack)))
+{
+	year <- unlist(strsplit(names(rstack)[i], '_'))[4]
+	doy <- unlist(strsplit(names(rstack)[i], '_'))[5]
+	dd = strptime(paste(year, doy), format="%Y %j")
+	date = c(date, as.character(dd))
+	
+}
+
+#construct dataframes
+Npoints=dim(MOD)[1]
+
+for (i in 1:Npoints)
+	{
+	fsca = as.vector(MOD[i,])
+	df = data.frame(date, fsca)
+	write.csv(df, paste0(wd,'/spatial/fca_P',i,'.csv'))
+	}
+
+
+
+#====================================================================
+# MODIS SA CODES
+#====================================================================
+# 0-100=NDSI snow 200=missing data
+# 201=no decision
+# 211=night
+# 237=inland water 239=ocean
+# 250=cloud
+# 254=detector saturated 255=fill
+#====================================================================
+# MODIS SA CODES
+#====================================================================

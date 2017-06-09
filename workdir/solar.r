@@ -12,7 +12,7 @@ swPoint=swin
 toaPoint=toa
 #dimensions
 dim1=length(dd) #dims (dates * mf)
-dim2=length(mf$id)
+dim2=dim(mf)[1]
 
 #correction find solar zenith
 svec=c()

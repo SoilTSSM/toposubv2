@@ -1,4 +1,5 @@
 #!/bin/bash
+echo $(basename $BASH_SOURCE)  'running........'
 source toposat.ini
 
 echo "precip pfactor used:" $pfactor
@@ -8,6 +9,7 @@ ncells=$(Rscript getRasterDims.R $wd spatial/eraExtent.tif)
 echo "ERA-Grid cells= " $ncells 
 
 # compute elevations of each box and write out
+echo "Computing ERA-grid box elevations, this may take some time....."
 Rscript eraBoxEle.R $wd 'predictors/ele.tif' 'spatial/eraExtent.tif'
 
 echo '========================================================='
@@ -15,14 +17,25 @@ echo 'RUN TOPOSCALE'
 echo '========================================================='
 # Run toposcale
 for Ngrid in $(seq 1 $ncells); do
-	echo "Running TopoSCALE GRID" $Ngrid 
-	#get box ele using Ngrid pass as arg
 	gridpath=$wd'/grid'$Ngrid
+ 	if [ ! -d "$gridpath" ]; then
+   	echo "Grid "$Ngrid" has been removed because it contained no points. Now processing "$Ngrid+1
+   	continue
+ 	fi
+	echo "Running TopoSCALE GRID" $Ngrid 
+
+	# Add eleDiff to listpoints
 	Rscript boxMetadata.R $gridpath $Ngrid
-	Rscript tscale_rhum.R $gridpath $Ngrid
-	Rscript tscale_tair.R $gridpath $Ngrid
-	Rscript tscale_windu.R $gridpath $Ngrid
-	Rscript tscale_windv.R $gridpath $Ngrid
+
+	 Rscript tscale_plevel.R $gridpath $Ngrid 'rhumPl'
+	 Rscript tscale_plevel.R $gridpath $Ngrid 'tairPl'
+	 Rscript tscale_plevel.R $gridpath $Ngrid 'uPl'
+	 Rscript tscale_plevel.R $gridpath $Ngrid 'vPl'
+	# Rscript tscale_rhum.R $gridpath $Ngrid 
+	# Rscript tscale_tair.R $gridpath $Ngrid
+	# Rscript tscale_windu.R $gridpath $Ngrid
+	# Rscript tscale_windv.R $gridpath $Ngrid
+
 	Rscript tscale_sw.R $gridpath $Ngrid FALSE $tz #TRUE requires svf as does more computes terrain/sky effects
 	Rscript tscale_lw.R $gridpath $Ngrid $svfCompute
 	Rscript tscale_p.R $gridpath $Ngrid $pfactor

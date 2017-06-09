@@ -5,6 +5,8 @@ from collections import OrderedDict
 import calendar
 import sys
 from ecmwfapi import ECMWFDataServer
+import time
+start_time = time.time()
 server = ECMWFDataServer()
  
 def retrieve_interim():
@@ -57,7 +59,7 @@ def retrieve_interim():
             startDate = "%04d%02d%02d" % (year, month, 1)
             numberOfDays = calendar.monthrange(year, month)[1]
             lastDate = "%04d%02d%02d" % (year, month, numberOfDays)
-            target = eraDir + "/interim_daily_SURF_%04d%02d.nc" % (year, month)
+            target = eraDir + "/interim_daily_PLEVEL_%04d%02d.nc" % (year, month)
             requestDates = (startDate + "/TO/" + lastDate)
             interim_request(requestDates, target, grid, bbox)
  
@@ -90,6 +92,8 @@ def interim_request(requestDates, target, grid, bbox):
     })
 if __name__ == "__main__":
     retrieve_interim()
+
+print("--- %s seconds ---" % (time.time() - start_time))
 
 
   

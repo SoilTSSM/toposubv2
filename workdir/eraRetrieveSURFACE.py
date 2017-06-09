@@ -4,6 +4,8 @@ from collections import OrderedDict
 import calendar
 import sys
 from ecmwfapi import ECMWFDataServer
+import time
+start_time = time.time()
 server = ECMWFDataServer()
  
 def retrieve_interim():
@@ -98,5 +100,8 @@ def interim_request(requestDates, target, grid, bbox):
     })
 if __name__ == "__main__":
     retrieve_interim()
+
+print("--- %s seconds ---" % (time.time() - start_time))
+
 
 

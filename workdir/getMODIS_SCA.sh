@@ -6,6 +6,9 @@
 source toposat.ini
 gui=$1 #TRUE or FALSE
 
+# clear data
+rm -r $sca_wd/*
+
 # compute from dem
 longWest=$(Rscript getExtent.R $wd/predictors/ele.tif lonW)
 longEast=$(Rscript getExtent.R $wd/predictors/ele.tif lonE)
@@ -43,4 +46,5 @@ sed -i "${lineNo}s/.*/$var/" $options_file
 # run MODIStsp tool
 Rscript getMODIS_SCA.R $gui $options_file # cannot run non-interactively for some reason
 
-# translate all grids
+# extract timersies per point
+Rscript extractSCATimeseries.R $wd $sca_wd'/Snow_Cov_Daily_500m_v5/SC' $wd'/spatial/points.shp' 

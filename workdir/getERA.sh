@@ -1,3 +1,5 @@
+#!/bin/bash
+echo $(basename $BASH_SOURCE)  'running........'
 source toposat.ini
 
 # Fetch ERA-data

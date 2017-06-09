@@ -34,7 +34,7 @@ setwd(wd)
 #=======================================================================================================
 #			READ FILES
 #=======================================================================================================
-mf=read.table('listpoints.txt', header=TRUE, sep='\t')
+mf=read.csv('listpoints.txt')
 load('../eraDat/all/swSurf')
 load('../eraDat/all/toaSurf')
 load('../eraDat/all/datesSurf')
@@ -42,7 +42,7 @@ load('../eraDat/all/datesSurf')
 #========================================================================
 #		COMPUTE SW (no loop needed)
 #========================================================================
-npoints=length(mf$id)
+npoints=dim(mf)[1]
 sw=swSurf_cut[,nbox]
 swm=matrix(rep(sw,npoints),ncol=npoints) #make matrix with ncol =points, repeats of each nbox vector
 toa=toaSurf_cut[,nbox]

@@ -1020,6 +1020,26 @@ t_vec<-as.numeric(t_vec)
 return(t_vec)
 }
 
+#changed data structure (z,T reversed order due to new preprocessing of era data)
+
+plevel2point2<-function(dat,gdat, stationEle){
+require(Hmisc)
+gph<-gdat/9.80665 # geopotential height = geopotential/9.80665 [gravity at sea level]
+#gph[gph==0]<-0 #prevents negative m asl
+t_vec=c()
+for(i in 1:length(gph[1,])){
+t<-approxExtrap( x=gph[,i],y=dat[,i], rule=2, xout=stationEle)[2]
+t<-t$y
+t_vec=c(t_vec, t)
+}
+t_vec<-as.numeric(t_vec)
+#vectorise
+#d=apply(X=dat, MARGIN=c(1,), FUN=interp6to3, x=gph, y=dat,xout=stationEle)
+
+
+return(t_vec)
+}
+
 #============================================================================================
 #		LWIN SCALING
 #=============================================================================================

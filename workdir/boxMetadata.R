@@ -46,17 +46,15 @@ nbox=as.numeric(args[2])
 #				COMPUTE POINTS META DATA - eleDiff, gridEle, Lat, Lon
 #===========================================================================
 setwd(wd)
-file='../eraDat/strd.nc'
-infileT='../eraDat/tpl.nc'
-
-nc=nc_open(infileT)
-mf=read.table('listpoints.txt',header=TRUE,sep='\t')
-npoints=length(mf$id)
+file='../eraDat/SURF.nc'
+nc=nc_open(file)
+mf=read.csv('listpoints.txt')
+npoints=length(mf$ele)
 eraBoxEle=read.table('../eraEle.txt',sep=',', header=FALSE)[,1]
 
 #find ele diff station/gidbox
 #eraBoxEle<-getEraEle(dem=eraBoxEleDem, eraFile=tFile) # $masl
-gridEle<-rep(eraBoxEle[nbox],length(mf$id))
+gridEle<-rep(eraBoxEle[nbox],length(mf$ele))
 mf$gridEle<-round(gridEle,2)
 eleDiff=mf$ele-mf$gridEle
 mf$eleDiff<-round(eleDiff,2)
@@ -70,8 +68,8 @@ lat=ncvar_get(nc, 'latitude')
 lon=ncvar_get(nc, 'longitude')
 latn=lat[y]
 lonn=lon[x]
-mf$lat=rep(latn,length(mf$id))
-mf$lon=rep(lonn,length(mf$id))
+mf$boxlat=rep(latn,length(mf$ele))
+mf$boxlon=rep(lonn,length(mf$ele))
 
-write.table(mf, 'listpoints.txt', row.names=FALSE, sep='\t')
+write.csv(mf, 'listpoints.txt', row.names=FALSE)
 

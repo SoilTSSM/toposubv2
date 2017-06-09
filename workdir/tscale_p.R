@@ -22,7 +22,7 @@ pfactor=as.numeric(args[3])
 
 #**********************  SCRIPT BEGIN *******************************
 setwd(wd)
-coordmapfile='../eraDat/strd.nc'
+coordmapfile='../eraDat/SURF.nc'
 
 #===========================================================================
 #				POINTS
@@ -31,8 +31,8 @@ coordmapfile='../eraDat/strd.nc'
 
 #make shapefile of points
 #mf=read.table(metaFile, sep=',', header =T)
-mf=read.table('listpoints.txt',header=T,sep='\t')
-npoints=length(mf$id)
+mf=read.csv('listpoints.txt')
+npoints=dim(mf)[1]
 
 #=======================================================================================================
 #			READ FILES
