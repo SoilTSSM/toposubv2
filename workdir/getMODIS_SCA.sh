@@ -3,7 +3,7 @@
 # docs MÒDIS SCA https://modis-snow-ice.gsfc.nasa.gov/uploads/C6_MODIS_Snow_User_Guide.pdf
 # Sript gets extent from DEM and sets options for SCA download
 
-source toposat.ini
+source $wd/toposat.ini
 gui=$1 #TRUE or FALSE
 
 # clear data

@@ -16,13 +16,15 @@ def retrieve_interim():
        You can use the variable "target" to organise the requested data in files as you wish.
        In the example below the data are organised in files per month. (eg "interim_daily_201510.grb")
     """
+    grd =   str(sys.argv[7])
+    tol = float(grd)/2 # this tol adjust extent based on out perimeter (ele.tif) to one based on grid centers (ERA).
     strtDate = str(sys.argv[1])
     endDate = str(sys.argv[2]) 
-    latNorth = str(sys.argv[3])
-    latSouth =  str(sys.argv[4])
-    lonEast = str(sys.argv[5])
-    lonWest = str(sys.argv[6])
-    grd =   str(sys.argv[7])
+    latNorth = str(float(sys.argv[3]) - tol)
+    latSouth =  str(float(sys.argv[4]) + tol)
+    lonEast = str(float(sys.argv[5]) - tol)
+    lonWest = str(float(sys.argv[6]) + tol)
+    
     eraDir =  str(sys.argv[8])
 
     string = strtDate
@@ -86,7 +88,7 @@ def interim_request(requestDates, target, grid, bbox):
         "date": requestDates,
         "stream" : "oper",
         "levtype": "sfc",
-        "param": "168.128/175.128/169.128/228.128/167.128/212.128",
+        "param": "129.128/168.128/175.128/169.128/228.128/167.128/212.128",
         "dataset": "interim",
         "step": "3/6/9/12",
         "grid": grid,

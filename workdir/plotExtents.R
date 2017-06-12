@@ -3,6 +3,8 @@
 #====================================================================
 #INFO
 
+#plot retrieved era against dem to check extents
+
 #DEPENDENCY
 require(raster)
 
@@ -10,16 +12,21 @@ require(raster)
 # PARAMETERS/ARGS
 #====================================================================
 args = commandArgs(trailingOnly=TRUE)
-wd=args[1] #'/home/joel/sim/topomap_test/grid1' #
-
+ #'/home/joel/sim/topomap_test/grid1' #
+wd=args[1]
 #====================================================================
 # PARAMETERS FIXED
-#====================================================================
-#**********************  SCRIPT BEGIN *******************************
+#====================================================================\
 setwd(wd)
+#plot of simulation domain
+pdf('spatial/extentEraMap.pdf')
+plot(raster('predictors/ele.tif'), main='Retrieved extent of ERA-grids overlaid DEM.' , sub='ERA-grid outline (blue). ele.tif (raster)')
+plot(extent(raster('eraDat/SURF.nc')),add=TRUE, col='blue', lwd=3)
+dev.off()
 
-#get modal surface type of each sample 0=vegetation, 1=debris, 2=steep bedrock
-lc=raster('predictors/surface.tif')
-zones=raster('landform.tif')
-zoneStats=zonal(lc,zones, modal,na.rm=T)
-write.table(zoneStats,'landcoverZones.txt',sep=',', row.names=F)
+
+
+
+
+
+    

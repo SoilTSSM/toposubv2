@@ -1,6 +1,6 @@
 #!/bin/bash
 echo $(basename $BASH_SOURCE)  'running........'
-source toposat.ini
+source $wd/toposat.ini
 mkdir $wd/spatial
 
 # Fetch DEM(s) for bbox

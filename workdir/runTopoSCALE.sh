@@ -1,16 +1,19 @@
 #!/bin/bash
 echo $(basename $BASH_SOURCE)  'running........'
-source toposat.ini
+source $wd/toposat.ini
 
 echo "precip pfactor used:" $pfactor
 
 # Returns number of cells in ERA-Grid extent"
 ncells=$(Rscript getRasterDims.R $wd spatial/eraExtent.tif) 
-echo "ERA-Grid cells= " $ncells 
+echo "ERA-Grid cells to run= " $wd/grid*
 
-# compute elevations of each box and write out
-echo "Computing ERA-grid box elevations, this may take some time....."
-Rscript eraBoxEle.R $wd 'predictors/ele.tif' 'spatial/eraExtent.tif'
+
+# compute elevations of each box and write out - NEED another way to do this, too long.
+echo "Computing ERA-grid box elevations."
+#Rscript eraBoxEle.R $wd 'predictors/ele.tif' 'spatial/eraExtent.tif'\
+# get from surface gp field instaeda
+Rscript getGridEle.R $wd 
 
 echo '========================================================='
 echo 'RUN TOPOSCALE'

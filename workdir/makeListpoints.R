@@ -28,10 +28,11 @@ dat= read.csv(pointsFile)
 proj='+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
 lon=dat[,1]
 lat=dat[,2]
-loc<-data.frame(lon, lat)
-shp<-SpatialPointsDataFrame(loc,as.data.frame(dat), proj4string= CRS(proj))
-lp=extract(rstack,shp)
-lp=data.frame(lp, lon,lat)
+loc <-data.frame(lon, lat)
+shp <-SpatialPointsDataFrame(loc,as.data.frame(dat), proj4string= CRS(proj))
+lp = extract(rstack,shp)
+lp = data.frame(lp, lon,lat)
+lp = na.omit(lp)
 write.csv(lp, '../listpoints.txt', row.names=FALSE)
 
 # Test if grid contains points and remove if not

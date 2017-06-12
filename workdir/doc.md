@@ -44,7 +44,10 @@ In this mode a set of points are defined (long,lat) by a csv file. Unit of simul
 - 
 
 ## makeListpoints.sh
+1. creates listpoints file at grid level\
+2. removes ERA-grids with no points
 ### Modules
+makeListpoints.R
 ### In
 ### Out
 

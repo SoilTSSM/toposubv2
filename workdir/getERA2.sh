@@ -1,6 +1,6 @@
 #!/bin/bash
 echo $(basename $BASH_SOURCE)  'running........'
-source toposat.ini
+source $wd/toposat.ini
 
 # restructured to ensure one request per reel - order of magnitudes quicker.
 

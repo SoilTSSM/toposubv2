@@ -1,6 +1,6 @@
 
 #!/bin/bash
-source toposat.ini
+source $wd/toposat.ini
 
 #========================================================================
 #               make batch file
@@ -11,8 +11,15 @@ echo "Setting up simulation directories for $ncells  ERA-Grids"
 
 # set up sim directoroes #and write metfiles
 for Ngrid in $(seq 1 $ncells); do
-	echo "Simulations grid" $Ngrid "running"
+	
 	gridpath=$wd'/grid'$Ngrid
+
+	if [ ! -d "$gridpath" ]; then
+   	echo "Grid "$Ngrid" has been removed because it contained no points. Now processing "$Ngrid+1
+   	continue
+ 	fi
+
+ 	echo "Simulations grid" $Ngrid "running"
 	cd $gridpath
 	batchfile=batch.txt
 	sim_entries=$gridpath/S*

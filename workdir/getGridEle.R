@@ -4,22 +4,29 @@
 #INFO
 
 #DEPENDENCY
-require(raster)
-
+require(ncdf4)
+#SOURCE
+source('tscale_src.R')
 #====================================================================
 # PARAMETERS/ARGS
 #====================================================================
 args = commandArgs(trailingOnly=TRUE)
-wd=args[1] #'/home/joel/sim/topomap_test/grid1' #
+wd=args[1]
 
 #====================================================================
 # PARAMETERS FIXED
 #====================================================================
+file = '/home/joel/sim/topomap_points/eraDat/SURF.nc'
 #**********************  SCRIPT BEGIN *******************************
 setwd(wd)
+nc=nc_open(file)
+gp = ncvar_get( nc,'z')
+surfEle = gp[,, 1] / 9.80665
 
-#get modal surface type of each sample 0=vegetation, 1=debris, 2=steep bedrock
-lc=raster('predictors/surface.tif')
-zones=raster('landform.tif')
-zoneStats=zonal(lc,zones, modal,na.rm=T)
-write.table(zoneStats,'landcoverZones.txt',sep=',', row.names=F)
+ele=as.vector(surfEle)
+grid=1:length(surfEle)
+
+# construct dataframe
+df=data.frame(grid, ele)
+write.table(ele, 'eraEle.txt', sep=',', row.names=FALSE, col.names=FALSE)
+

@@ -1,4 +1,4 @@
-source toposat.ini
+source $wd/toposat.ini
 
 # Returns number of cells in ERA-Grid extent"
 ncells=$(Rscript getRasterDims.R $wd spatial/eraExtent.tif) 

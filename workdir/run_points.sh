@@ -1,6 +1,12 @@
 #!/bin/bash
-source toposat.ini
-rm -r $wd/*
+export wd=/home/joel/sim/topomap_points/
+source $wd/toposat.ini
+cd $wd
+mv $wd/toposat.ini ../
+find $wd/* -delete
+cd ../
+mv toposat.ini $wd
+cd $srcdir
 exec > >(tee $wd/stdout.log) 2> >(tee $wd/stderr.log >&2)
 
 #====================================================================

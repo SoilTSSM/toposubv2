@@ -1,6 +1,6 @@
 #!/bin/bash
 echo $(basename $BASH_SOURCE)  'running........'
-source toposat.ini
+source $wd/toposat.ini
 
 # Fetch ERA-data
 Rscript getERA.R $wd $runtype $startDate $endDate $grid

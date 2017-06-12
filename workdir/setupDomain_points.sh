@@ -1,7 +1,7 @@
 #!/bin/bash
 echo $(basename $BASH_SOURCE)  'running........'
-source toposat.ini
-
+echo $wd
+source $wd/toposat.ini
 mkdir $wd/spatial
 
 # Fetch DEM(s) for bbox
@@ -10,6 +10,11 @@ Rscript getDEM_points.R $wd $demDir $pointsFile $grid
 # Clip to nearest ERA-extent
 Rscript clipToEra.R $wd $grid
 
+# make shape of all points
+Rscript makeShape.R $wd $pointsFile 1 2
+
+#crop dem to points to remove excess domain
+Rscript crop2points.R $wd
 # generate kml of domain
 
 Rscript makeKML.R $wd $wd/predictors/ele.tif shape $wd/spatial/extent
@@ -36,3 +41,4 @@ Rscript makeKML.R $wd $wd/predictors/surface.tif raster $wd/spatial/landcover
 pkill googleearth-bin 
 
 google-earth $wd/spatial/landcover.kmz &
+

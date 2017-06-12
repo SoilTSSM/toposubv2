@@ -1,4 +1,4 @@
-source toposat.ini
+source $wd/toposat.ini
 
 
 
