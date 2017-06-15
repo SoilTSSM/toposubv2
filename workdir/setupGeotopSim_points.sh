@@ -1,5 +1,7 @@
 #!/bin/bash
 echo $(basename $BASH_SOURCE)  'running........'
+wd=$1
+echo $wd
 source $wd/toposat.ini
 
 # Returns number of cells in ERA-Grid extent"

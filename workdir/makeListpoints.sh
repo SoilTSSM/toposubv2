@@ -1,9 +1,10 @@
 #!/bin/bash
-# creates a listpoints for each ERA-grid
 echo $(basename $BASH_SOURCE)  'running........'
+wd=$1
+echo $wd
 source $wd/toposat.ini
 
-
+# creates a listpoints for each ERA-grid
 
 # Returns number of cells in ERA-Grid extent"
 ncells=$(Rscript getRasterDims.R $wd spatial/eraExtent.tif) 
@@ -17,6 +18,6 @@ for Ngrid in $(seq 1 $ncells); do
    	echo "Grid "$Ngrid" has been removed because it contained no points. Now processing "$Ngrid+1
    	continue
  	fi
-	Rscript makeListpoints.R $gridpath $pointsFile
+	Rscript makeListpoints.R $gridpath $pointsFile 1 2 3 #numbers give position of pointsfile columns: pk, lon, lat
 done
 

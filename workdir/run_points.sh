@@ -1,44 +1,44 @@
 #!/bin/bash
-export wd=/home/joel/sim/topomap_points/
+wd=$1 #'/home/joel/sim/topomap_points/'
 source $wd/toposat.ini
-cd $wd
-mv $wd/toposat.ini ../
-find $wd/* -delete
-cd ../
-mv toposat.ini $wd
-cd $srcdir
+# cd $wd
+# mv $wd/toposat.ini ../
+# find $wd/* -delete
+# cd ../
+# mv toposat.ini $wd
+# cd $srcdir
 exec > >(tee $wd/stdout.log) 2> >(tee $wd/stderr.log >&2)
 
 #====================================================================
 # Set up domain
 #====================================================================
-./setupDomain_points.sh
+./setupDomain_points.sh $wd
 
 #====================================================================
 # Retrieve ERA data
 #====================================================================
-./getERA2.sh
+./getERA2.sh $wd
 
 #====================================================================
 # Run toposub
 #====================================================================
 #./runTopoSUB.sh
-./makeListpoints.sh
+./makeListpoints.sh $wd
 
 #====================================================================
 # Run toposcale
 #====================================================================
-./runTopoSCALE.sh
+./runTopoSCALE.sh $wd
 
 #====================================================================
 # set up LSM
 #====================================================================
-./setupGeotopSim_points.sh
+./setupGeotopSim_points.sh $wd
 
 #====================================================================
 # Run LSM
 #====================================================================
-./runLSM.sh
+./runLSM.sh $wd
 
 
 #====================================================================
@@ -49,7 +49,7 @@ exec > >(tee $wd/stdout.log) 2> >(tee $wd/stderr.log >&2)
 #====================================================================
 # Data assimiliataion
 #====================================================================
-./getMODIS_SCA.sh TRUE #should be false but does not work yet
+./getMODIS_SCA.sh $wd TRUE #should be false but does not work yet
 
 
 # run model

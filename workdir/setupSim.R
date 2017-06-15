@@ -93,7 +93,7 @@ tail(Date)
 
 			if(length(which(is.na(meteo)==TRUE))==0)
 			{
-				print(paste0( length(which(is.na(meteo)==TRUE)), 'NANs found in meteofile: ',simindex))
+				print(paste0( 'SUCCESS:', length(which(is.na(meteo)==TRUE)), 'NANs found in meteofile: ',simindex))
 			}
 
 		write.table(meteo, paste(simindex,'/meteo0001.txt', sep=''), sep=',', row.names=F, quote=FALSE)
@@ -102,8 +102,8 @@ tail(Date)
 
 
 		#listp=data.frame(mf$id[i], mf$ele[i], mf$asp[i], mf$slp[i], mf$svf[i])
-		listp=mf[1,]
-		listp=round(listp,2)
+		listp=mf[i,]
+		listp=round(listp,5)
 		#names(listp)<-c('id', 'ele', 'asp', 'slp', 'svf')
 		write.table(listp, paste0(simindex, '/listpoints.txt', sep=''), sep=',',row.names=F)
 

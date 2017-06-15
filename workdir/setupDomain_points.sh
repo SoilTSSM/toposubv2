@@ -1,20 +1,26 @@
 #!/bin/bash
 echo $(basename $BASH_SOURCE)  'running........'
+wd=$1
 echo $wd
 source $wd/toposat.ini
+
 mkdir $wd/spatial
 
 # Fetch DEM(s) for bbox
-Rscript getDEM_points.R $wd $demDir $pointsFile $grid
+Rscript getDEM_points.R $wd $demDir  $grid $pointsFile 2 3
 
 # Clip to nearest ERA-extent
 Rscript clipToEra.R $wd $grid
 
 # make shape of all points
-Rscript makeShape.R $wd $pointsFile 1 2
+Rscript makeShape.R $wd $pointsFile 2 3
+
+#domain plot
+Rscript domainPlot.R $wd TRUE
 
 #crop dem to points to remove excess domain
-Rscript crop2points.R $wd
+#Rscript crop2points.R $wd
+
 # generate kml of domain
 
 Rscript makeKML.R $wd $wd/predictors/ele.tif shape $wd/spatial/extent

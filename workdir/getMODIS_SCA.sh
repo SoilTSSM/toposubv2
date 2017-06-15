@@ -1,10 +1,16 @@
+#!/bin/bash
+echo $(basename $BASH_SOURCE)  'running........'
+wd=$1
+gui=$2 #TRUE or FALSE
+echo $wd
+source $wd/toposat.ini
+
 # #https://github.com/lbusett/MODIStsp
 # use to set params: "Rscript getMODIS_SCA.R TRUE $options_file"
 # docs MÒDIS SCA https://modis-snow-ice.gsfc.nasa.gov/uploads/C6_MODIS_Snow_User_Guide.pdf
 # Sript gets extent from DEM and sets options for SCA download
 
-source $wd/toposat.ini
-gui=$1 #TRUE or FALSE
+
 
 # clear data
 rm -r $sca_wd/*
