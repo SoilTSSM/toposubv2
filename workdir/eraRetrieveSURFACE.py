@@ -100,14 +100,14 @@ def interim_request(requestDates, target, grid, bbox):
         'RESOL' : "AV",
     })
 if __name__ == "__main__":
-    strtDate = str(sys.argv[1])
-    endDate = str(sys.argv[2]) 
-    latNorth = str(float(sys.argv[3]))
-    latSouth =  str(float(sys.argv[4]))
-    lonEast = str(float(sys.argv[5]))
-    lonWest = str(float(sys.argv[6]))
-    grd =   str(sys.argv[7])
-    eraDir =  sys.argv[8]
+    strtDate    = str(sys.argv[1])
+    endDate     = str(sys.argv[2]) 
+    latNorth    = str(float(sys.argv[3]))
+    latSouth    =  str(float(sys.argv[4]))
+    lonEast     = str(float(sys.argv[5]))
+    lonWest     = str(float(sys.argv[6]))
+    grd         =   str(sys.argv[7])
+    eraDir      =  sys.argv[8]
     retrieve_interim(strtDate,endDate,latNorth,latSouth,lonEast,lonWest,grd,eraDir)
 
 print("--- %s seconds ---" % (time.time() - start_time))
