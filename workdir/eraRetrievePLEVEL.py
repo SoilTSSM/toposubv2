@@ -9,7 +9,8 @@ import time
 start_time = time.time()
 server = ECMWFDataServer()
  
-def retrieve_interim():
+
+def retrieve_interim(strtDate,endDate,latNorth,latSouth,lonEast,lonWest,grd,eraDir):
     """      
        A function to demonstrate how to iterate efficiently over several years and months etc    
        for a particular interim_request.     
@@ -17,19 +18,19 @@ def retrieve_interim():
        You can use the variable "target" to organise the requested data in files as you wish.
        In the example below the data are organised in files per month. (eg "interim_daily_201510.grb")
     """
-    grd =   str(sys.argv[7])
+    grd =   str(grd)
     tol = float(grd)/2 # this tol adjust extent based on out perimeter (ele.tif) to one based on grid centers (ERA).
-    strtDate = str(sys.argv[1])
-    endDate = str(sys.argv[2]) 
-    latNorth = str(float(sys.argv[3]) - tol)
-    latSouth =  str(float(sys.argv[4]) + tol)
-    lonEast = str(float(sys.argv[5]) - tol)
-    lonWest = str(float(sys.argv[6]) + tol)
-
-    eraDir =  sys.argv[8]
+    strtDate = str(strtDate)
+    endDate = str(endDate) 
+    latNorth = str(float(latNorth) - tol)
+    latSouth =  str(float(latSouth) + tol)
+    lonEast = str(float(lonEast) - tol)
+    lonWest = str(float(lonWest) + tol)
+    eraDir =  eraDir
 
     string = strtDate
     strsplit = string.split('-' )
+    print strsplit
     yearStart = int(strsplit[0])
     monthStart = int(strsplit[1])
     dayStart = int(strsplit[2])
@@ -93,7 +94,17 @@ def interim_request(requestDates, target, grid, bbox):
         'RESOL' : "AV",
     })
 if __name__ == "__main__":
-    retrieve_interim()
+    
+    strtDate = str(sys.argv[1])
+    endDate = str(sys.argv[2]) 
+    latNorth = str(float(sys.argv[3]))
+    latSouth =  str(float(sys.argv[4]))
+    lonEast = str(float(sys.argv[5]))
+    lonWest = str(float(sys.argv[6]))
+    grd =   str(sys.argv[7])
+    eraDir =  sys.argv[8]
+    retrieve_interim(strtDate,endDate,latNorth,latSouth,lonEast,lonWest,grd,eraDir)
+
 
 print("--- %s seconds ---" % (time.time() - start_time))
 

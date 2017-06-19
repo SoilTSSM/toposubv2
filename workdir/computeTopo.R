@@ -30,7 +30,7 @@ dem=raster('predictors/ele.tif')
 if (svfComp == TRUE){
 	print("Warning: computing svf which can take some time")
 r <- dem
-s <- svf(r, nAngles=8, maxDist=1000, ll=TRUE)
+s <- svf(r, nAngles=6, maxDist=500, ll=TRUE)
 
 setwd(paste0(wd,'/predictors'))
 writeRaster(round(s,2), "svf.tif", overwrite=TRUE) #write and reduce precision
