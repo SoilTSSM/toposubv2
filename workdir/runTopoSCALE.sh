@@ -32,7 +32,7 @@ for Ngrid in $(seq 1 $ncells); do
 	# Add eleDiff to listpoints
 	Rscript boxMetadata.R $gridpath $Ngrid
 
-	 Rscript tscale_plevel.R $gridpath $Ngrid 'rhumPl'
+	Rscript tscale_plevel.R $gridpath $Ngrid 'rhumPl'
 	 Rscript tscale_plevel.R $gridpath $Ngrid 'tairPl'
 	 Rscript tscale_plevel.R $gridpath $Ngrid 'uPl'
 	 Rscript tscale_plevel.R $gridpath $Ngrid 'vPl'

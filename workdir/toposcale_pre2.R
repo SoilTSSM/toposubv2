@@ -8,7 +8,7 @@
 require(ncdf4)
 
 #SOURCE
-source('tscale_src.R')
+source('./rsrc/tscale_src.R')
 
 #====================================================================
 # PARAMETERS/ARGS
