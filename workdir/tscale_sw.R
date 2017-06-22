@@ -7,14 +7,14 @@
 require(raster)
 require(insol)
 #SOURCE
-source('tscale_src.R')
-source('surfFluxSrc.r')
-source('solar_functions.r')
-source('solar.r')
-source('solar_geometry.R')
-source('solarPartition.R')
-source('sdirEleScale.R')
-source('sdifSvf.R')
+source('./rsrc/tscale_src.R')
+source('./rsrc/surfFluxSrc.r')
+source('./rsrc/solar_functions.r')
+source('./rsrc/solar.r')
+source('./rsrc/solar_geometry.R')
+source('./rsrc/solarPartition.R')
+source('./rsrc/sdirEleScale.R')
+source('./rsrc/sdifSvf.R')
 #====================================================================
 # PARAMETERS/ARGS
 #====================================================================

@@ -7,8 +7,8 @@
 require(raster)
 
 #SOURCE
-source('tscale_src.R')
-source('toposub_src.R')
+source('./rsrc/tscale_src.R')
+source('./rsrc/toposub_src.R')
 
 
 #====================================================================
@@ -45,7 +45,7 @@ sol=read.table('sol.txt' , header=T, sep=',')
 pSurf_lapse=read.table(  'pSurf_lapse.txt', header=T, sep=',')
 
 #========================================================================
-#		CALC WIND SPEED AND DIRECION FROM U/V
+#		CALC WIND SPEED AND DIRECION FROM U/V - this needs to be in 'TOPOSCALE'
 #========================================================================
 u=uPoint
 v=vPoint

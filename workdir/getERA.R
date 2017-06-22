@@ -10,7 +10,7 @@
 require(raster)
 
 #SOURCE
-source('getERA_src.R')
+source('./rsrc/getERA_src.R')
 
 #====================================================================
 # PARAMETERS/ARGS
