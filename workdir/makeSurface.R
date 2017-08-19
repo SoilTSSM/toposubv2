@@ -46,9 +46,9 @@ myextent=raster('predictors/ele.tif') # output is projected and clipped to this 
 
 #getSds(HdfName='/home/joel/data/MODIS_ARC/MODIS/MOD13Q1.005/2000.08.12/MOD13Q1.A2000225.h25v06.005.2006307225438.hdf', SDSstring="250m 16 days NDVI") # incorrect result
 
-
-
-mydates=c("2000-08-12", "2004-08-12","2008-08-12","2012-08-12","2016-08-12")
+#Seem different dates avaialbale now this error means date is not available "Error in lst_todo[[1]] : subscript out of bounds
+# "2004-08-12" ,"2007-08-13", "2011-08-13"
+mydates=c("2000-08-12","2004-08-12","2008-08-12","2012-08-12","2016-08-12") 
 	for (mydate in mydates){
 	print (paste0('computing NDVI for ', mydate))	
 	runGdal(product='MOD13Q1', collection = NULL, begin = mydate, end = mydate, extent = myextent, tileH = NULL, tileV = NULL, buffer = 0,SDSstring = "1 0 0 0 0 0 0 0 0 0 0 0", job = NULL, checkIntegrity = TRUE, wait = 0.5, forceDownload = TRUE, overwrite = FALSE)

@@ -25,6 +25,7 @@ print(paste0('clipping domain for ERA-grid resolution: ', grid))
 #====================================================================
 #parameters
 setwd(wd)
+dir.create(paste0(wd, '/spatial'))
 ele=raster('predictors/dem.tif')
 tol=0 #must be greater than 0.5*box resolution to get correct extent in degrees
 xtent=extent(ele)
