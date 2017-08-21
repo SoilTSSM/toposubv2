@@ -40,7 +40,7 @@ setwd(wd)
 #	fetch and compute MODIS NDVI
 #====================================================================
 
-
+system(paste0('rm -r ', outDirPath, '/*'))
 #getProduct() #identify products to download
 myextent=raster('predictors/ele.tif') # output is projected and clipped to this extent
 
