@@ -30,7 +30,6 @@ file.create(outfile)
 for ( i in 1:Nclust)
 
 	{
-
 	simindex=paste0('S',formatC(i, width=5,flag='0'))
 	#egridpath=simindex
 
@@ -42,7 +41,6 @@ for ( i in 1:Nclust)
 
 	#append to master file
 	write(meanX, paste(gridpath, '/meanX_', targV,'.txt', sep=''), sep=',',append=T)
-
 	}
 
 

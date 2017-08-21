@@ -15,8 +15,6 @@ gridpath <- args[1]
 Nclust <-	args[2]
 file1 <- 	args[3]
 targV <- 	args[4]
-beg <- 		args[5]
-end <- 		args[6]
 #====================================================================
 # PARAMETERS FIXED
 #====================================================================
@@ -30,7 +28,7 @@ end <- 		args[6]
 # TOPOSUB POSTPROCESSOR 2		
 #====================================================================
 setwd(gridpath)
-outfile <- paste('meanX_',targV,'.txt',sep='')
+outfile <- paste('latest_',targV,'.txt',sep='')
 file.create(outfile)
 
 for ( i in 1:Nclust){
@@ -40,23 +38,18 @@ for ( i in 1:Nclust){
 	#read in lsm output
 	sim_dat <- read.table(paste(simindex,'/out/',file1,sep=''), sep=',', header=T)
 
-	#cut timeseries
-	sim_dat_cut <- timeSeriesCut( sim_dat=sim_dat, beg=beg, end=end)	
-
-	#mean annual values
-	#timeSeries2(spath=gridpath,colP=targV, sim_dat_cut=sim_dat_cut,FUN=mean)
-
-	#compute mean value of target variable for sample
-	meanX<-	tapply(sim_dat_cut[,targV],sim_dat_cut$IDpoint, FUN=mean)
+	# Get last data point
+	latestDat <- sim_dat_cut[length(sim_dat_cut[,targV]),targV]
+	
 
 	#append to master file
-	write(meanX, paste(gridpath, '/meanX_', targV,'.txt', sep=''), sep=',',append=T)
+	write(latestDat, paste(gridpath, '/latest_', targV,'.txt', sep=''), sep=',',append=T)
 	}
 
 if(crisp==TRUE){
 	##make crisp maps
 	landform<-raster("landform.tif")	
-	crispSpatial2(col=targV,Nclust=Nclust,esPath=gridpath, landform=landform)
+	crispSpatialInstant(col=targV,Nclust=Nclust,esPath=gridpath, landform=landform)
 	}
 
 # ============== NEW FUNCTIONS NEEDED ======================

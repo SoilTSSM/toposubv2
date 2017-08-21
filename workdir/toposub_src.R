@@ -527,8 +527,8 @@ timeSeries <- function(esPath,col, sim_dat_cut, FUN){
 	write.table(meanX, paste(esPath, '/meanX_', col,'.txt', sep=''), sep=',')
 }
 
-timeSeries2 <- function(spath,col, sim_dat_cut, FUN){
-	meanX<-	tapply(sim_dat_cut[,col],sim_dat_cut$IDpoint, FUN)
+timeSeries2 <- function(spath,colP, sim_dat_cut, FUN){
+	meanX <- tapply(sim_dat_cut[,colP],sim_dat_cut$IDpoint, FUN)
 	write(meanX, paste(spath, '/meanX_', col,'.txt', sep=''), sep=',',append=T)
 }
 
@@ -906,5 +906,18 @@ fuzRes=colSums(dat*t(fuzMemMat))
 return(fuzRes)
 }
 	
-
+crispSpatialInstant<-function(col,Nclust,esPath, landform){
+		#dir.create(paste(spath,'/crispRst/',sep=''))
+		#raster(paste(esPath,"/landform_",es,"Weights.asc",sep=''))->land
+		land <- landform
+		latest <- read.table(paste(esPath, '/instant_', col,'.txt', sep=''), sep=',')
+		as.vector(latest)->latest
+		length(latest$V1)->l
+		seq(1,l,1)->seq
+		as.vector(seq)->seq
+		data.frame(seq,latest)->latestdf
+		subs(land, latestdf,by=1, which=2)->rst
+		rst=round(rst,2)
+		writeRaster(rst, paste(esPath,'/crisp_',col,'_','.tif', sep=''),overwrite=T)
+		}
 
