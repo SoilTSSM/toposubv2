@@ -56,8 +56,6 @@ setwd(demDir)
 	setwd(demDir)
 	df=read.csv(pointsFile)
 
-
-
 	# section to buffer points which will be exclude by cliptoera.R. ERA grid coords are centres whereas dem is llcorner, therefore there is half a grid resolution offset.
 	revtrunc <- function(x) { x - floor(x) } 
 

@@ -17,7 +17,8 @@ args = commandArgs(trailingOnly=TRUE)
 wd=args[1]
 demDir=args[2]
 #runtype=args[2]
-bbox=as.numeric(unlist(strsplit( args[3],",")))
+#box=as.numeric(unlist(strsplit( args[3],",")))
+bbox=c(as.numeric(args[3]),as.numeric(args[4]),as.numeric(args[5]),as.numeric(args[6]))
 #grid=args[3]
 #points input
 #lon=c(85.52 ,85.68,84.2)
