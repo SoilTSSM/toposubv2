@@ -39,7 +39,7 @@ for ( i in 1:Nclust){
 	sim_dat <- read.table(paste(simindex,'/out/',file1,sep=''), sep=',', header=T)
 
 	# Get last data point
-	latestDat <- sim_dat_cut[length(sim_dat_cut[,targV]),targV]
+	latestDat <- sim_dat[length(sim_dat[,targV]),targV]
 	
 
 	#append to master file
