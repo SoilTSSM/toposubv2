@@ -492,7 +492,7 @@ save(memberVals, paste(esPath,'/memberVals',sep=''))
 # time series cut 
 #==============================================================================
 
-timeSeriesCut <- function(esPath,col, sim_dat, beg, end){
+timeSeriesCut <- function( sim_dat, beg, end){ #rmoved esPath,col,
 	
 	#Period:
 	#beg <- "01/07/2010 00:00:00"

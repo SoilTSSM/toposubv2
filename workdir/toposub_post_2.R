@@ -6,7 +6,7 @@
 #DEPENDENCY
 
 #SOURCE
-
+source("./rsrc/toposub_src.R")
 #====================================================================
 # PARAMETERS/ARGS
 #====================================================================
@@ -15,16 +15,18 @@ gridpath=args[1]
 Nclust=args[2]
 file1=args[3]
 targV=args[4]
-
+beg=args[5]
+end=args[6]
 #====================================================================
 # PARAMETERS FIXED
 #====================================================================
-
+	#beg <- "01/07/2010 00:00:00"
+	#end <- "01/07/2011 00:00:00"
 #====================================================================
 # TOPOSUB POSTPROCESSOR 2		
 #====================================================================
 setwd(gridpath)
-outfile=paste('/meanX_',targV,'.txt',sep='')
+outfile=paste('meanX_',targV,'.txt',sep='')
 file.create(outfile)
 
 for ( i in 1:Nclust){
@@ -33,19 +35,20 @@ simindex=paste0('S',formatC(i, width=5,flag='0'))
 
 
 #read in lsm output
-sim_dat=read.table(paste(simindex,file1,sep=''), sep=',', header=T)
+sim_dat=read.table(paste(simindex,'/out/',file1,sep=''), sep=',', header=T)
 #cut timeseries
 sim_dat_cut=timeSeriesCut(esPath=simindex,col=targV, sim_dat=sim_dat, beg=beg, end=end)	
 #mean annual values
 timeSeries2(spath=gridpath,col=targV, sim_dat_cut=sim_dat_cut,FUN=mean)
 }
+
 #write success file
-outfile=paste(gridpath,'/POSTPROCESS_2_SUCCESS.txt',sep='')
-file.create(outfile)
-##make crisp maps
-landform<-raster("landform.tif")
+#outfile=paste(gridpath,'/POSTPROCESS_2_SUCCESS.txt',sep='')
+#file.create(outfile)
 
 if(crisp==TRUE){
+##make crisp maps
+landform<-raster("landform.tif")	
 crispSpatial2(col=targV,Nclust=Nclust,esPath=gridpath, landform=landform)
 }
 #make fuzzy maps
