@@ -17,7 +17,8 @@ source('./rsrc/toposub_src.R')
 args = commandArgs(trailingOnly=TRUE)
 wd=args[1] #'/home/joel/sim/topomap_test/grid1' #
 svfComp=args[2]
-
+tscale=as.numeric(args[3])
+pscale=as.numeric(args[4])
 #====================================================================
 # PARAMETERS FIXED
 #====================================================================
@@ -74,7 +75,7 @@ tail(Date)
 		dir.create(paste0(simindex,'/out'), recursive=TRUE)
 		dir.create(paste0(simindex,'/rec'), recursive=TRUE)
 
-		Tair=round((tPoint[,i]-273.15),2) #K to deg
+		Tair=round((tPoint[,i]-273.15),2) +tscale#K to deg
 		RH=round(rPoint[,i],2)
 		Wd=round(wdPoint[,i],2)
 		Ws=round(wsPoint[,i],2)
@@ -82,7 +83,7 @@ tail(Date)
 		#sdir=round(solDir[,i],2)
 		#sdif=round(solDif[,i],2)
 		LW=round(lwPoint[,i],2)
-		Prec=round(pSurf_lapse[,i],5)
+		Prec=round(pSurf_lapse[,i],5) *pscale
 		meteo=cbind(Date,Tair,RH,Wd,Ws,SW,LW,Prec)
 		#meteo=cbind(Date,Tair,RH,Wd,Ws,sdif,sdir,LW,Prec)
 		
