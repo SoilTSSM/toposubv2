@@ -111,10 +111,10 @@ setwd(demDir)
 		if (sign(df2$lat[i])==1){LATVAL<-"N"}
 		if (sign(df2$lon[i])==-1){LONVAL<-"W"}
 		if (sign(df2$lon[i])==1){LONVAL<-"E"}
-		lon_pretty=formatC(df2$lon[i],width=3,flag="0")
+		lon_pretty=formatC(abs(df2$lon[i]),width=3,flag="0")
 		#get tile
-		filetoget=paste0(LATVAL,df2$lat[i],LONVAL,lon_pretty,".SRTMGL1.hgt.zip")
-		filetogetUNZIP=paste0(LATVAL,df2$lat[i],LONVAL,lon_pretty,".hgt")
+		filetoget=paste0(LATVAL,abs(df2$lat[i]),LONVAL,lon_pretty,".SRTMGL1.hgt.zip")
+		filetogetUNZIP=paste0(LATVAL,abs(df2$lat[i]),LONVAL,lon_pretty,".hgt")
 
 	if (file.exists(filetoget)){ #dont download again
 	   print(paste0(filetoget, " exists"))
