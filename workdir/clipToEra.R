@@ -53,6 +53,15 @@ print('Request complete')
 print(t3)
 eraExtent=raster('spatial/eraExtent.nc')
 
+# era data is given in gaussian grid ie degreed east range is 0-360 not -180-180, in case of longitude > 180, subtract 360
+if (eraExtent@extent@xmin > 180)
+	{ 
+	eraExtent@extent@xmin <- eraExtent@extent@xmin - 360
+	}
+if (eraExtent@extent@xmax > 180)
+	{ 
+	eraExtent@extent@xmax <- eraExtent@extent@xmax - 360
+	}
 # crop domain to era grids completely covered by DEM - this will lose margin of dem
 # accuracy of these two extents is around half DEm pixel = 15m ie can be 15m difference in boudaries
 
