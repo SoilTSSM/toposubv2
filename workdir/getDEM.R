@@ -18,7 +18,7 @@ wd=args[1]
 demDir=args[2]
 #runtype=args[2]
 #box=as.numeric(unlist(strsplit( args[3],",")))
-bbox=c(as.numeric(args[3]),as.numeric(args[4]),as.numeric(args[5]),as.numeric(args[6]))
+bbox=c(as.numeric(args[3]),as.numeric(args[4]),as.numeric(args[5]),as.numeric(args[6])) # w,s,e,n
 #grid=args[3]
 #points input
 #lon=c(85.52 ,85.68,84.2)
@@ -94,6 +94,11 @@ setwd(demDir)
 #if (runtype == "bbox"){
 	setwd(demDir)
 	floorbox=floor(bbox)
+
+	#reduce by 1 longlat seq to prevent neighbouring tile being downloaded - coords are ll corner. bbox with coord = 8 46  9 47 means just give me a sing 1x1 deg tile with coords in ll corner of 8,46. Without the subtraction of 1 we would get 4 1*1 deg tiles ie 8,46 + 8,47 + 9,46 + 9,47
+	floorbox[3]  <- floorbox[3] -1 
+	floorbox[4]  <- floorbox[4] -1 
+
 	lonseq=seq(floorbox[1],floorbox[3],1)
 	latseq=seq(floorbox[2],floorbox[4],1)
 	gridstoget=expand.grid(lonseq,latseq)

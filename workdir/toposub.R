@@ -18,7 +18,7 @@ source("./rsrc/toposub_src.R")
 args = commandArgs(trailingOnly=TRUE)
 gridpath=args[1]
 Nclust=args[2]
-Ngrid=args[3]
+#Ngrid=args[3]
 # # test if there is at least one argument: if not, return an error
 # if (length(args)==0) {
 #  # stop("At least one argument must be supplied (Nclust)", call.=FALSE)} 
