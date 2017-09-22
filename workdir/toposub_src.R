@@ -497,7 +497,7 @@ timeSeriesCut <- function( sim_dat, beg, end){ #rmoved esPath,col,
 	#Period:
 	#beg <- "01/07/2010 00:00:00"
 	#end <- "01/07/2011 00:00:00"
-	timeRange <-strptime(c(beg, end), format="%d/%m/%Y %H:%M:%OS")
+	timeRange <-strptime(c(beg, end), format="%d/%m/%Y %H:%M")
 	beg <- timeRange[1]
 	end <- timeRange[2]
 	
