@@ -1,8 +1,5 @@
 # This tool extracts a mean timeseries from toposub results
-
-#
-# in: memeber results
-# out: timeseries
+# here it needs to return SCA
 
 #====================================================================
 # SETUP
