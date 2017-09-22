@@ -5,6 +5,7 @@ import calendar
 import sys
 from ecmwfapi import ECMWFDataServer
 import time
+from dateutil.relativedelta import *
 start_time = time.time()
 server = ECMWFDataServer()
  
@@ -62,8 +63,8 @@ def retrieve_interim(strtDate,endDate,latNorth,latSouth,lonEast,lonWest,grd,eraD
     print("Retrieving ERA-Interim data")
     print("Bbox = " + bbox)
     print("Grid = " + grd)
-    print("Start date = " + start)
-    print("End date = " + end)
+    print("Start date = " , dateList[0])
+    print("End date = " , dateList[len(dateList)-1])
 
     #for year in list(range(yearStart, yearEnd + 1)):
         #for month in list(range(monthStart, monthEnd + 1)):

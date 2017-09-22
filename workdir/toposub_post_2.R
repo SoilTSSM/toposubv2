@@ -30,10 +30,10 @@ end <- 		args[6]
 #========================================================================
 #		FORMAT DATE
 #========================================================================
-d=strptime(startDate, format="%Y-%m-%d %H:%M", tz=" ")
+d=strptime(beg, format="%Y-%m-%d", tz=" ")
 geotopStart=format(d, "%d/%m/%Y %H:%M")
 
-d=strptime(endDate, format="%Y-%m-%d %H:%M", tz=" ")
+d=strptime(end, format="%Y-%m-%d", tz=" ")
 geotopEnd=format(d, "%d/%m/%Y %H:%M")
 #====================================================================
 # TOPOSUB POSTPROCESSOR 2		
@@ -50,7 +50,7 @@ for ( i in 1:Nclust){
 	sim_dat <- read.table(paste(simindex,'/out/',file1,sep=''), sep=',', header=T)
 
 	#cut timeseries
-	sim_dat_cut <- timeSeriesCut( sim_dat=sim_dat, beg=beg, end=end)	
+	sim_dat_cut <- timeSeriesCut( sim_dat=sim_dat, beg=geotopStart, end=geotopEnd)	
 
 	#mean annual values
 	#timeSeries2(spath=gridpath,colP=targV, sim_dat_cut=sim_dat_cut,FUN=mean)

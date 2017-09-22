@@ -54,10 +54,14 @@ setwd(wd)
 #========================================================================
 #		FORMAT DATE
 #========================================================================
-d=strptime(startDate, format="%Y-%m-%d %H:%M", tz=" ")
+d=strptime(startDate, format="%Y-%m-%d", tz=" ")
+
+#geotop outputs first data at startDate +1 day for some reason. Here submit start date -1 day to geotop inputs to avoid this bug
+d$mday <- d$mday -1
 geotopStart=format(d, "%d/%m/%Y %H:%M")
 
-d=strptime(endDate, format="%Y-%m-%d %H:%M", tz=" ")
+
+d=strptime(endDate, format="%Y-%m-%d", tz=" ")
 geotopEnd=format(d, "%d/%m/%Y %H:%M")
 #========================================================================
 #		Define land cover properties

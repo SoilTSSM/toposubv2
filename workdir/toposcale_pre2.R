@@ -248,7 +248,8 @@ save(toagridAdj, file=paste(outRootSurf, '/toagrid', sep=''))
 
 ########################################################################################################
 #													
-#				CUT FIELDS TO COMMON PERIOD
+#				CUT FIELDS TO COMMON PERIOD defined by startDate and endDate (actual download are 
+#				start/enddate +/- 1 month buffer to ensure this works)
 #									
 ########################################################################################################
 

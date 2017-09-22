@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 from datetime import datetime, timedelta
 from collections import OrderedDict
@@ -48,8 +47,9 @@ def retrieve_interim(strtDate,endDate,latNorth,latSouth,lonEast,lonWest,grd,eraD
     print("Retrieving ERA-Interim data")
     print("Bbox = " + bbox)
     print("Grid = " + grd)
-    print("Start date = " + start)
-    print("End date = " + end)
+    print("Start date = " , dateList[0])
+    print("End date = " , dateList[len(dateList)-1])
+
 
     #for year in list(range(yearStart, yearEnd + 1)):
         #for month in list(range(monthStart, monthEnd + 1)):
