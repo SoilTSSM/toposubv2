@@ -6,6 +6,7 @@ import calendar
 import sys
 from ecmwfapi import ECMWFDataServer
 import time
+from dateutil.relativedelta import *
 start_time = time.time()
 server = ECMWFDataServer()
  
@@ -28,31 +29,28 @@ def retrieve_interim(strtDate,endDate,latNorth,latSouth,lonEast,lonWest,grd,eraD
     lonWest = str(float(lonWest) + tol)
     eraDir =  eraDir
 
-    string = strtDate
-    strsplit = string.split('-' )
-    print strsplit
-    yearStart = int(strsplit[0])
-    monthStart = int(strsplit[1])
-    dayStart = int(strsplit[2])
 
-    string = endDate
-    strsplit = string.split('-' )
-    yearEnd = int(strsplit[0])
-    monthEnd = int(strsplit[1])
+
 
     grid=str(grd) + "/" + str(grd)
     bbox=(str(latNorth) + "/" + str(lonWest) + "/" + str(latSouth) + "/" + str(lonEast)) 
 
+
+    
+    # download buffer of +/- 1 month to ensure all necessary timestamps are there for interpolations and consistency between plevel and surf
+    dates = [str(strtDate), str(endDate)]
+    start = datetime.strptime(dates[0], "%Y-%m-%d")
+    end = datetime.strptime(dates[1], "%Y-%m-%d")
+    start = start+relativedelta(months=-1)
+    end = end+relativedelta(months=+1)
+    dateList = OrderedDict(((start + timedelta(_)).strftime(r"%Y-%m"), None) for _ in xrange((end - start).days)).keys()
+
     print("Retrieving ERA-Interim data")
     print("Bbox = " + bbox)
     print("Grid = " + grd)
-    print("Start date = " + str(yearStart) + "-" + str(monthStart))
-    print("End date = " + str(yearEnd) + "-" + str(monthEnd))
-    
-    dates = [str(yearStart) + '-' + str(monthStart) + '-' + str(dayStart), str(endDate)]
-    start = datetime.strptime(dates[0], "%Y-%m-%d")
-    end = datetime.strptime(dates[1], "%Y-%m-%d")
-    dateList = OrderedDict(((start + timedelta(_)).strftime(r"%Y-%m"), None) for _ in xrange((end - start).days)).keys()
+    print("Start date = " + start)
+    print("End date = " + end)
+
     #for year in list(range(yearStart, yearEnd + 1)):
         #for month in list(range(monthStart, monthEnd + 1)):
     for date in dateList:    

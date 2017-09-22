@@ -39,9 +39,10 @@ plev= '500/650/775/850/925/1000'	#pressure levels (mb), only written if levtype=
 #===============================================================================
 #				CONSTRUCT DATE
 #===============================================================================
-#add one day buffer to ensure all required timestamp present during processing
-startDatebuff=format((as.Date(startDate)-1),'%Y%m%d')
-endDatebuff=format((as.Date(endDate)+1),'%Y%m%d')
+#ERA interim downloads by month. By adding large buffer ensure all timesteps necessay for interpolation are present (ie midnight). Penalty is that it requires 2 extra months download (*2).
+
+startDatebuff=format((as.Date(startDate)-10),'%Y%m%d')
+endDatebuff=format((as.Date(endDate)+10),'%Y%m%d')
 dd=paste0(startDatebuff,'/to/',endDatebuff) # "20121230/to/20121231"
 print(dd)
 
