@@ -26,6 +26,15 @@ end <- 		args[6]
 	crisp <- TRUE #other options as separate functions]
 	fuzzy <- FALSE
 	VALIDATE <- FALSE
+
+#========================================================================
+#		FORMAT DATE
+#========================================================================
+d=strptime(startDate, format="%Y-%m-%d %H:%M", tz=" ")
+geotopStart=format(d, "%d/%m/%Y %H:%M")
+
+d=strptime(endDate, format="%Y-%m-%d %H:%M", tz=" ")
+geotopEnd=format(d, "%d/%m/%Y %H:%M")
 #====================================================================
 # TOPOSUB POSTPROCESSOR 2		
 #====================================================================

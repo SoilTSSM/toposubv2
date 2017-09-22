@@ -8,13 +8,13 @@
 require(gdata)
 
 #SOURCE
-source('./rsrc/gt_control.R')
+source("./rsrc/gt_control.R")
 #====================================================================
 # PARAMETERS/ARGS
 #====================================================================
 args = commandArgs(trailingOnly=TRUE)
 wd=args[1]
-geotopInputsPath=args[2] #'/home/joel/sim/topomap_test/grid1' #
+geotopInputsPath=args[2] #"/home/joel/sim/topomap_test/grid1" #
 startDate=args[3]
 endDate=args[4]
 #====================================================================
@@ -54,11 +54,11 @@ setwd(wd)
 #========================================================================
 #		FORMAT DATE
 #========================================================================
-d=strptime(startDate, format='%Y-%m-%d')
-geotopStart=format(d, '%d/%m/%Y %H:%M')
+d=strptime(startDate, format="%Y-%m-%d %H:%M", tz=" ")
+geotopStart=format(d, "%d/%m/%Y %H:%M")
 
-d=strptime(endDate, format='%Y-%m-%d')
-geotopEnd=format(d, '%d/%m/%Y %H:%M')
+d=strptime(endDate, format="%Y-%m-%d %H:%M", tz=" ")
+geotopEnd=format(d, "%d/%m/%Y %H:%M")
 #========================================================================
 #		Define land cover properties
 #========================================================================
@@ -68,8 +68,8 @@ geotopEnd=format(d, '%d/%m/%Y %H:%M')
 #debris [1]
 #bedrock [2]
 
-surface=read.table('landcoverZones.txt',header=T, sep=',')
-mf=read.csv('listpoints.txt')
+surface=read.table("landcoverZones.txt",header=T, sep=",")
+mf=read.csv("listpoints.txt")
 npoints=dim(mf)[1]
 
 # combine to dataframe
@@ -83,27 +83,27 @@ surfacedf=data.frame(ThetaRes,ThetaSat,AlphaVanGenuchten,NVanGenuchten,NormalHyd
 
 
 for(i in 1:npoints){
-	simindex=paste0('S',formatC(i, width=5,flag='0'))
-#expRoot= paste(spath, '/sim',i, sep='')
-parfilename='geotop.inpts'
+	simindex=paste0("S",formatC(i, width=5,flag="0"))
+#expRoot= paste(spath, "/sim",i, sep="")
+parfilename="geotop.inpts"
 fs=readLines(geotopInputsPath) 
 
 
 #datetime
-start=gt.par.fline(fs=fs, keyword='InitDateDDMMYYYYhhmm') 
-end=gt.par.fline(fs=fs, keyword='EndDateDDMMYYYYhhmm')
+start=gt.par.fline(fs=fs, keyword="InitDateDDMMYYYYhhmm") 
+end=gt.par.fline(fs=fs, keyword="EndDateDDMMYYYYhhmm")
 
-lnLat=gt.par.fline(fs=fs, keyword='Latitude') 
-lnLong=gt.par.fline(fs=fs, keyword='Longitude') 
-lnMetEle=gt.par.fline(fs=fs, keyword='MeteoStationElevation') 
-lnPele=gt.par.fline(fs=fs, keyword='PointElevation') 
+lnLat=gt.par.fline(fs=fs, keyword="Latitude") 
+lnLong=gt.par.fline(fs=fs, keyword="Longitude") 
+lnMetEle=gt.par.fline(fs=fs, keyword="MeteoStationElevation") 
+lnPele=gt.par.fline(fs=fs, keyword="PointElevation") 
 #soil
-lntr=gt.par.fline(fs=fs, keyword='ThetaRes') 
-lnts=gt.par.fline(fs=fs, keyword='ThetaSat') 
-lnavg=gt.par.fline(fs=fs, keyword='AlphaVanGenuchten') 
-lnnvg=gt.par.fline(fs=fs, keyword='NVanGenuchten')
-lnnhc=gt.par.fline(fs=fs, keyword='NormalHydrConductivity')
-lnlhc=gt.par.fline(fs=fs, keyword='LateralHydrConductivity')
+lntr=gt.par.fline(fs=fs, keyword="ThetaRes") 
+lnts=gt.par.fline(fs=fs, keyword="ThetaSat") 
+lnavg=gt.par.fline(fs=fs, keyword="AlphaVanGenuchten") 
+lnnvg=gt.par.fline(fs=fs, keyword="NVanGenuchten")
+lnnhc=gt.par.fline(fs=fs, keyword="NormalHydrConductivity")
+lnlhc=gt.par.fline(fs=fs, keyword="LateralHydrConductivity")
 
 #write datetime
 fs=gt.par.wline(fs=fs,ln=start,vs=geotopStart)
@@ -126,14 +126,14 @@ fs=gt.par.wline(fs=fs,ln=lnlhc,vs=surfacedf$LateralHydrConductivity[lc])
 
 #snow - reduce on debris slopes
 if(lc==3){
-scf=gt.par.fline(fs=fs, keyword='SnowCorrFactor') 
+scf=gt.par.fline(fs=fs, keyword="SnowCorrFactor") 
 fs=gt.par.wline(fs=fs,ln=scf,vs=0.4)
 }
-#gt.exp.write(eroot_loc=paste(simRoot, 'sim',i, sep=''),eroot_sim,enumber=1, fs=fs)
+#gt.exp.write(eroot_loc=paste(simRoot, "sim",i, sep=""),eroot_sim,enumber=1, fs=fs)
 comchar<-"!" #character to indicate comments
-con <- file(paste0(simindex,'/',parfilename), "w")  # open an output file connection
-	cat(comchar,"SCRIPT-GENERATED EXPERIMENT FILE",'\n', file = con,sep="")
-	cat(fs, file = con,sep='\n')
+con <- file(paste0(simindex,"/",parfilename), "w")  # open an output file connection
+	cat(comchar,"SCRIPT-GENERATED EXPERIMENT FILE","\n", file = con,sep="")
+	cat(fs, file = con,sep="\n")
 	close(con)
 
 }
